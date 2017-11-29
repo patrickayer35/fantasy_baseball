@@ -1,0 +1,21 @@
+INSTRUCTIONS/PSEUDOCODE
+
+Step 1 - get the week from the user in a function called get_week()
+	   - the function get_week() should ask the user to input the week
+	   - verify the input is an integer
+	   - verify the integer is in the correct range
+	   - return the week to main()
+
+Step 2 - pass the week into a function called get_full_box_score_urls()
+	   - the function will build the url for the league's scoreboard with the week
+	   - the html of that webpage will be scraped
+	   - collect all the "FULL BOX SCORE" links for each matchup and append to a list --> NOTE: urls collected will be relative urls
+	   - loop through urls and concatenate the protocol, server, and directory to the beginning of each box score url
+	   - return the list to main()
+
+Step 3 - loop through each baxscore_url, passing it to a function called process_main_scoreboard()
+	   - the function takes the input url and fetches the corresponding webpage
+	   - find div tag with id attribute equal to "teamInfos" and style attributes equal to "clear:both; width:956px; margin-bottom:10px;"
+	   - pass div tag to a function called parse_team_data()
+
+Step 4 - in parse_team_data(), find div tag with style attribute equal to

@@ -1,0 +1,14 @@
+CODEBOOK
+
+###### team data ######
+team name: 			teamName, 			string, 	stores the team name
+owner name: 		ownerName, 			string, 	stores the team's owner
+team id:			teamId,				integer,	stores each team's unique identification number (a number 1 through 12)
+wins: 				wins, 				integer, 	stores the team's wins
+losses: 			losses, 			integer, 	stores the team's losses
+ties: 				ties, 				integer, 	stores the team's ties
+streak: 			streak, 			string, 	stores the team's streak in the format "most recent win/loss/tie" + "streak of win/loss/tie"
+pitchers started: 	pitchersStarted, 	integer, 	stores the number of starting pitchers a team used for the week
+pitching limit: 	pitchingLimit, 		integer, 	stores the max number of starting pitchers a team is allowed
+acquisitions: 		acquisitions, 		integer, 	number of players a team acquired during the week
+acquisitions limit: acquisitionsLimit, 	integer, 	number of players a team is allowed to acquire during a week
