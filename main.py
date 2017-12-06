@@ -10,14 +10,18 @@ def main():
     if not os.path.exists(file_loc):
         os.mkdir(file_loc)
     
+    print("Extracting scoreboard matchups from week " + str(week) + "..."),
     boxscore_urls = get_full_boxscore_urls(week)
+    print("Done.")
     for b in boxscore_urls:
+        print("Processing data from " + b + "..."),
         away_data, home_data = scrape_team_data(b)
         matchup_str = "/Matchup" + away_data[1] + "vs" + home_data[1]
         write_team_data(away_data, file_loc + matchup_str)
         write_team_data(home_data, file_loc + matchup_str)
+        print("Done.")
 
-def get_week():
+def get_week():     # get the matchup's week number
     
     flag = True
     while (flag):
@@ -34,7 +38,7 @@ def get_week():
     
     return week
 
-def get_full_boxscore_urls(week):
+def get_full_boxscore_urls(week):       # get the boxscore urls for each matchup
     
     url = "http://games.espn.com/flb/scoreboard?leagueId=75894&matchupPeriodId=" + str(week)
     raw_html = urllib2.urlopen(url).read()
@@ -51,13 +55,14 @@ def scrape_team_data(url):
     
     raw_html = urllib2.urlopen(url).read()
     
-    team_info_soup = BeautifulSoup(raw_html).find("div", {"id":"teamInfos"})
-    away_soup = team_info_soup.find("div", {"style":"float:left;"})
-    home_soup = team_info_soup.find("div", {"style":"float:right;"})
+    team_info_soup = BeautifulSoup(raw_html).find("div", {"id":"teamInfos"})    # this html block contains both team's information
+    away_soup = team_info_soup.find("div", {"style":"float:left;"})             # this html block contains only the away team's info
+    home_soup = team_info_soup.find("div", {"style":"float:right;"})            # this html block contains only the home team's info
     
     away_data_basics = parse_team_data_basics(away_soup)
     home_data_basics = parse_team_data_basics(home_soup)
     
+    # find html blocks containing pitching and acquisition limits for both teams
     away_limits = BeautifulSoup(raw_html).find_all("div", {"style":"float:left;width:440px;margin-top:0px;"})
     home_limits = BeautifulSoup(raw_html).find_all("div", {"style":"float:left;width:440px;margin-left:44px;margin-top:0px;"})
     
@@ -73,13 +78,20 @@ def parse_team_data_basics(team_soup):
     
     data = []
     
+    # get the team's name
     team_name = team_soup.find("div", {"style":"font-size:18px; margin-bottom:14px; font-family:Helvetica,sans-serif;"}).get_text()
+    # get the team's id by first locating the team's clubhouse url and extracting the id from the end
     team_id = re.findall("http:\/\/games\.espn\.com\/flb\/clubhouse\?leagueId=75894&teamId=([\d]{1,})", "http://games.espn.com" + team_soup.find("a").get("href"))
+    # get the team owner's name
     owner = team_soup.find("div", {"class":"teamInfoOwnerData"}).get_text()
+    
+    # team_name, team_id, and owner data items are returned as unicode objects
+    # convert each item from unicode to string via the encode("utf-8") method
     data.append(team_name.encode("utf-8"))
     data.append(team_id[0].encode("utf-8"))
     data.append(owner.encode("utf-8"))
     
+    # get remaining text from team html block to extract record, standing, and streak
     text = team_soup.get_text()
     
     record = parse_record(text)
@@ -95,8 +107,8 @@ def parse_team_data_basics(team_soup):
 def parse_record(text):
     
     record = []
-    record_raw = re.findall("Record: ([\d]{1,}-[\d]{1,}-[\d]{1,})", text)
-    last = len(record_raw) - 1
+    record_raw = re.findall("Record: ([\d]{1,}-[\d]{1,}-[\d]{1,})", text)   # extract only the last matching expression to safeguard against
+    last = len(record_raw) - 1                                              # friends naming their teams something that also matches
     
     wins = re.findall("^[\d]{1,}", record_raw[last])
     losses = re.findall("-([\d]{1,})-", record_raw[last])
@@ -145,9 +157,10 @@ def parse_acquisition_limits(soup):
 
 def write_team_data(team_data, file_loc):
     
+    # create the file location if it doesn't exist
     if not os.path.exists(file_loc):
         os.mkdir(file_loc)
-    
+    # team data will be stored in files that are identified by their team ids
     file_name = os.path.join(file_loc, ("team_" + team_data[1] + ".txt"))
     out_file = open(file_name, "w")
     for d in team_data:
