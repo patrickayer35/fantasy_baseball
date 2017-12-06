@@ -6,9 +6,16 @@ import urllib2
 def main():
     
     week = get_week()
+    file_loc = "/Users/patrickayer/Desktop/fantasy/baseball/Week" + str(week)
+    if not os.path.exists(file_loc):
+        os.mkdir(file_loc)
+    
     boxscore_urls = get_full_boxscore_urls(week)
     for b in boxscore_urls:
-        process_main_scoreboard(b)
+        away_data, home_data = scrape_team_data(b)
+        matchup_str = "/Matchup" + away_data[1] + "vs" + home_data[1]
+        write_team_data(away_data, file_loc + matchup_str)
+        write_team_data(home_data, file_loc + matchup_str)
 
 def get_week():
     
@@ -40,39 +47,48 @@ def get_full_boxscore_urls(week):
     
     return boxscore_urls
 
-def process_main_scoreboard(url):
+def scrape_team_data(url):
     
     raw_html = urllib2.urlopen(url).read()
     
-    team_info_div = BeautifulSoup(raw_html).find("div", {"id":"teamInfos"})
-    away_block = team_info_div.find("div", {"style":"float:left;"})
-    home_block = team_info_div.find("div", {"style":"float:right;"})
+    team_info_soup = BeautifulSoup(raw_html).find("div", {"id":"teamInfos"})
+    away_soup = team_info_soup.find("div", {"style":"float:left;"})
+    home_soup = team_info_soup.find("div", {"style":"float:right;"})
     
-    away_data = parse_team_data(away_block)
-    home_data = parse_team_data(home_block)
+    away_data_basics = parse_team_data_basics(away_soup)
+    home_data_basics = parse_team_data_basics(home_soup)
     
-    for a in away_data:
-        print(a)
-    for h in home_data:
-        print(h)
+    away_limits = BeautifulSoup(raw_html).find_all("div", {"style":"float:left;width:440px;margin-top:0px;"})
+    home_limits = BeautifulSoup(raw_html).find_all("div", {"style":"float:left;width:440px;margin-left:44px;margin-top:0px;"})
+    
+    away_pitching_limits = parse_pitching_limits(away_limits[0])
+    home_pitching_limits = parse_pitching_limits(home_limits[0])
+    
+    away_acq_limits = parse_acquisition_limits(away_limits[1])
+    home_acq_limits = parse_acquisition_limits(home_limits[1])
+    
+    return away_data_basics + away_pitching_limits + away_acq_limits, home_data_basics + home_pitching_limits + home_acq_limits
 
-def parse_team_data(team_block):
+def parse_team_data_basics(team_soup):
     
     data = []
-    data.append(team_block.find("div", {"style":"font-size:18px; margin-bottom:14px; font-family:Helvetica,sans-serif;"}).get_text())
-    data.append("http://games.espn.com" + team_block.find("a").get("href"))
-    #data.append("http://games.espn.com" + \
-    #           team_block.find("div", {"stlye":"float:left; border-right:1px solid #dddddd; line-height:0px;"}).find("a").get("href"))
-    data.append(team_block.find("div", {"class":"teamInfoOwnerData"}).get_text())
     
-    text = team_block.get_text()
+    team_name = team_soup.find("div", {"style":"font-size:18px; margin-bottom:14px; font-family:Helvetica,sans-serif;"}).get_text()
+    team_id = re.findall("http:\/\/games\.espn\.com\/flb\/clubhouse\?leagueId=75894&teamId=([\d]{1,})", "http://games.espn.com" + team_soup.find("a").get("href"))
+    owner = team_soup.find("div", {"class":"teamInfoOwnerData"}).get_text()
+    data.append(team_name.encode("utf-8"))
+    data.append(team_id[0].encode("utf-8"))
+    data.append(owner.encode("utf-8"))
+    
+    text = team_soup.get_text()
+    
     record = parse_record(text)
     for r in record:
         data.append(r)
-    data.append(re.findall("Streak: ([W|L|T][\d]{1,})", text))
-    
-    #print(len(text))
-    #print(type(text))
+    data.append(parse_streak(text))
+    standing = parse_standing(text)
+    for s in standing:
+        data.append(s)
     
     return data
 
@@ -80,18 +96,67 @@ def parse_record(text):
     
     record = []
     record_raw = re.findall("Record: ([\d]{1,}-[\d]{1,}-[\d]{1,})", text)
+    last = len(record_raw) - 1
     
-    record.append(re.findall("^[\d]{1,}", record_raw[0]))
-    record.append(re.findall("-([\d]{1,})-", record_raw[0]))
-    record.append(re.findall("-([\d]{1,})$", record_raw[0]))
+    wins = re.findall("^[\d]{1,}", record_raw[last])
+    losses = re.findall("-([\d]{1,})-", record_raw[last])
+    ties = re.findall("-([\d]{1,})$", record_raw[last])
+    
+    record.append(wins[0].encode("utf-8"))
+    record.append(losses[0].encode("utf-8"))
+    record.append(ties[0].encode("utf-8"))
     
     return record
 
+def parse_streak(text):
+    
+    streak = re.findall("Streak: ([W|L|T][\d]{1,})", text)
+    last = len(streak) - 1
+    
+    return streak[last].encode("utf-8")
+
+def parse_standing(text):
+    
+    standing = re.findall("Standing:\s(.*)\n", text)
+    last = len(standing) - 1
+    
+    place = re.findall("(T-[\d]{1,}st|T-[\d]{1,}th|T-[\d]{1,}nd|T-[\d]{1,}rd)|([\d]{1,}st|[\d]{1,}th|[\d]{1,}nd|[\d]{1,}rd)", standing[last])
+    games_back = re.findall("\(([\d.]{1,})\sGB\)", standing[last])
+    if len(games_back) == 0:
+        games_back.append("0")
+    if place[0][0] == "":
+        return place[0][1].encode("utf-8"), games_back[0].encode("utf-8")
+    else:
+        return place[0][0].encode("utf-8"), games_back[0].encode("utf-8")
+
+def parse_pitching_limits(soup):
+    
+    text = re.findall("P:\s([\d]{1,}\/[\d]{1,})", soup.get_text())
+    limits = text[0].encode("utf-8").split("/")
+    
+    return limits
+
+def parse_acquisition_limits(soup):
+    
+    text = re.findall("\(Used\/Max\)\s:\s\s([\d]{1,}\s\/\s[\d]{1,})", soup.get_text())
+    limits = text[0].encode("utf-8").split(" / ")
+    
+    return limits
+
+def write_team_data(team_data, file_loc):
+    
+    if not os.path.exists(file_loc):
+        os.mkdir(file_loc)
+    
+    file_name = os.path.join(file_loc, ("team_" + team_data[1] + ".txt"))
+    out_file = open(file_name, "w")
+    for d in team_data:
+        out_file.write(d + "\n")
+    out_file.close()
+    
+    return
+
 main()
-
-
-#BeautifulSoup(raw_html).find("div", {"style":"float:left;width:440px;margin-top:0px;"})
-#BeautifulSoup(raw_html).find("div", {"style":"float:left;width:440px;margin-left:44px;margin-top:0px;"})
 
 
 
