@@ -6,19 +6,30 @@ import urllib2
 def main():
     
     week = get_week()
-    file_loc = "/Users/patrickayer/Desktop/fantasy/baseball/Week" + str(week)
-    if not os.path.exists(file_loc):
-        os.mkdir(file_loc)
+    main_directory = "/Users/patrickayer/Desktop/fantasy/baseball/Week" + str(week)
+    if not os.path.exists(main_directory):
+        os.mkdir(main_directory)
     
     print("Extracting scoreboard matchups from week " + str(week) + "..."),
     boxscore_urls = get_full_boxscore_urls(week)
     print("Done.")
+    
     for b in boxscore_urls:
         print("Processing data from " + b + "..."),
-        away_data, home_data = scrape_team_data(b)
+        away_data, home_data, days = scrape_team_data(b)
+        
         matchup_str = "/Matchup" + away_data[1] + "vs" + home_data[1]
-        write_team_data(away_data, file_loc + matchup_str)
-        write_team_data(home_data, file_loc + matchup_str)
+        file_loc = main_directory + matchup_str
+        write_team_data(away_data, file_loc)
+        write_team_data(home_data, file_loc)
+        
+        # days data will be passed here
+        for d in days:
+            raw_html = urllib2.urlopen(d["Url"]).read()
+            roster_soup = BeautifulSoup(raw_html).find_all("div", {"style":"width: 100%; margin-bottom: 40px; clear: both;"})
+            scrape_roster(roster_soup[0], away_data[1], file_loc)
+            scrape_roster(roster_soup[1], home_data[1], file_loc)
+        
         print("Done.")
 
 def get_week():     # get the matchup's week number
@@ -72,7 +83,17 @@ def scrape_team_data(url):
     away_acq_limits = parse_acquisition_limits(away_limits[1])
     home_acq_limits = parse_acquisition_limits(home_limits[1])
     
-    return away_data_basics + away_pitching_limits + away_acq_limits, home_data_basics + home_pitching_limits + home_acq_limits
+    away_team_data = away_data_basics + away_pitching_limits + away_acq_limits
+    home_team_data = home_data_basics + home_pitching_limits + home_acq_limits
+    
+    days_soup = BeautifulSoup(raw_html).find("div", {"style":"margin:10px 0px 10px 2px;"})
+    day_tags = days_soup("a")
+    days = []
+    for day in day_tags:
+        d = {"Day":day.get_text().encode("utf-8"), "Url":day.get("href").encode("utf-8")}
+        days.append(d)
+    
+    return away_team_data, home_team_data, days
 
 def parse_team_data_basics(team_soup):
     
@@ -169,7 +190,35 @@ def write_team_data(team_data, file_loc):
     
     return
 
+def scrape_daily_urls(url):
+    
+    raw_html = urllib2.urlopen(url).read()
+    days_soup = BeautifulSoup(raw_html).find("div", {"style":"margin:10px 0px 10px 2px;"})
+    #print(days_soup.prettify())
+    day_tags = days_soup("a")
+    #print(day_tags)
+    
+    days = []
+    for day in day_tags:
+        d = {"Day":day.get_text().encode("utf-8"), "Url":day.get("href").encode("utf-8")}
+        days.append(d)
+    
+    return days
+
+def scrape_roster(soup, team_id, file_loc):
+    
+    return
+
 main()
+
+def test_this():
+    
+    week = get_week()
+    boxscore_urls = get_full_boxscore_urls(week)
+    for b in boxscore_urls:
+        scrape_daily_urls(b)
+
+#test_this()
 
 
 
