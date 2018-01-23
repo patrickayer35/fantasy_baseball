@@ -13,6 +13,7 @@ pitching limit: 	pitchingLimit, 		integer, 	stores the max number of starting pi
 acquisitions: 		acquisitions, 		integer, 	number of players a team acquired during the week
 acquisitions limit: acquisitionsLimit, 	integer, 	number of players a team is allowed to acquire during a week
 winner:				winner,				boolean,	true if team won that week, false otherwise
+roster changes:		isLuigi,			boolean,	true if team made 0 roster moves/changes throughout the matchup (determined while reading in roster data)
 
 runs:				runs,				int,		stores total runs scored
 singels:			singles,			int,		stores total singles hit
@@ -52,8 +53,6 @@ total points:		totalPoints,		int,		stores total points scored between batters an
 list of batters:	batters,			vector,		vector storing player data structs for batters
 list of pitchers:	pitchers,			vector,		vector storing player data structs for pitchers
 bench players:		benchPlayers,		vector,		vector storing bench player structs for bench players
-entire roster:		allPlayers,			vector,		vector storing names of all players on roster for each day in matchup (including bench)		
-entire roster:		rosters,			array		array of pointers pointing to each daily roster
 pointer to batters:	battersPtr,			pointer,	pointer to batters
 pointer to pitchers:pitchersPtr,		pointer,	pointer to pitchers
 pointer to bench:	benchPtr,			pointer,	pointer to bench players
