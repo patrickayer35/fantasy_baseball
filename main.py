@@ -10,13 +10,11 @@ def main():
     if not os.path.exists(main_directory):
         os.mkdir(main_directory)
     
-    print("Extracting scoreboard matchups from week " + str(week) + "..."),
     boxscore_urls = get_full_boxscore_urls(week)
-    print("Done.")
     
     for b in boxscore_urls:
-        print("Processing data from " + b + "..."),
-        away_data, home_data, days = scrape_team_data(b)
+        print(b)
+        away_data, home_data, days = get_team_data(b)
         
         matchup_str = "/Matchup" + away_data[1] + "vs" + home_data[1]
         file_loc = main_directory + matchup_str
@@ -25,12 +23,18 @@ def main():
         
         # days data will be passed here
         for d in days:
+            print(d)
+            
             raw_html = urllib2.urlopen(d["Url"]).read()
             roster_soup = BeautifulSoup(raw_html).find_all("div", {"style":"width: 100%; margin-bottom: 40px; clear: both;"})
-            scrape_roster(roster_soup[0], away_data[1], file_loc)
-            scrape_roster(roster_soup[1], home_data[1], file_loc)
-        
-        print("Done.")
+            
+            away_batters, away_pitchers, away_bench = get_full_roster(roster_soup[0])
+            home_batters, home_pitchers, home_bench = get_full_roster(roster_soup[1])
+            
+            write_rosters(away_batters, away_pitchers, away_bench, away_data[1], file_loc, d["Day"])
+            write_rosters(home_batters, home_pitchers, home_bench, home_data[1], file_loc, d["Day"])
+    
+    return
 
 def get_week():     # get the matchup's week number
     
@@ -62,7 +66,7 @@ def get_full_boxscore_urls(week):       # get the boxscore urls for each matchup
     
     return boxscore_urls
 
-def scrape_team_data(url):
+def get_team_data(url):
     
     raw_html = urllib2.urlopen(url).read()
     
@@ -90,8 +94,7 @@ def scrape_team_data(url):
     day_tags = days_soup("a")
     days = []
     for day in day_tags:
-        d = {"Day":day.get_text().encode("utf-8"), "Url":day.get("href").encode("utf-8")}
-        days.append(d)
+        days.append({"Day":day.get_text().encode("utf-8"), "Url":day.get("href").encode("utf-8")})
     
     return away_team_data, home_team_data, days
 
@@ -115,21 +118,23 @@ def parse_team_data_basics(team_soup):
     # get remaining text from team html block to extract record, standing, and streak
     text = team_soup.get_text()
     
-    record = parse_record(text)
+    record = parse_team_data_record(text)
     for r in record:
         data.append(r)
-    data.append(parse_streak(text))
-    standing = parse_standing(text)
+    
+    data.append(parse_team_data_streak(text))
+    
+    standing = parse_team_data_standing(text)
     for s in standing:
         data.append(s)
     
     return data
 
-def parse_record(text):
+def parse_team_data_record(text):
     
     record = []
     record_raw = re.findall("Record: ([\d]{1,}-[\d]{1,}-[\d]{1,})", text)   # extract only the last matching expression to safeguard against
-    last = len(record_raw) - 1                                              # friends naming their teams something that also matches
+    last = len(record_raw) - 1                                              # friends naming their stupid teams something that also matches
     
     wins = re.findall("^[\d]{1,}", record_raw[last])
     losses = re.findall("-([\d]{1,})-", record_raw[last])
@@ -141,14 +146,14 @@ def parse_record(text):
     
     return record
 
-def parse_streak(text):
+def parse_team_data_streak(text):
     
     streak = re.findall("Streak: ([W|L|T][\d]{1,})", text)
     last = len(streak) - 1
     
     return streak[last].encode("utf-8")
 
-def parse_standing(text):
+def parse_team_data_standing(text):
     
     standing = re.findall("Standing:\s(.*)\n", text)
     last = len(standing) - 1
@@ -190,7 +195,7 @@ def write_team_data(team_data, file_loc):
     
     return
 
-def scrape_daily_urls(url):
+def get_daily_urls(url):
     
     raw_html = urllib2.urlopen(url).read()
     days_soup = BeautifulSoup(raw_html).find("div", {"style":"margin:10px 0px 10px 2px;"})
@@ -205,20 +210,97 @@ def scrape_daily_urls(url):
     
     return days
 
-def scrape_roster(soup, team_id, file_loc):
+def get_full_roster(soup):
     
+    batters = []
+    pitchers = []
+    bench = []
+    #roster = []
+    player_tables = soup.find_all("table", {"class":"playerTableTable tableBody"})
+    #roster += get_players(player_tables[0])
+    #roster += get_players(player_tables[1])
+    batters = get_players(player_tables[0], True)
+    pitchers = get_players(player_tables[1], True)
+    
+    hideables = soup.find_all("table", {"class":"playerTableTable tableBody hideableGroup"})
+    for h in hideables:
+        bench += get_players(h, False)
+    
+    return batters, pitchers, bench
+
+def get_players(soup, starters):
+    
+    p_0 = soup.find_all("tr", {"class":"pncPlayerRow playerTableBgRow0"})
+    p_1 = soup.find_all("tr", {"class":"pncPlayerRow playerTableBgRow1"})
+    p_2 = soup.find_all("tr", {"class":"pncPlayerRow irRow playerTableBgRow0"})
+    p_3 = soup.find_all("tr", {"class":"pncPlayerRow irRow playerTableBgRow1"})
+    raw_players = p_0 + p_1 + p_2 + p_3
+    
+    clean_players = []
+    for p in raw_players:
+        clean_players.append(get_player_data(p, starters))
+    
+    return clean_players
+
+def get_player_data(soup, starters):
+    
+    l = []  # empty list to hold all player's data
+    l.append(soup.find("td", {"style":"font-weight: bold;"}).get_text().encode("utf-8"))    # append player's fantasy slot
+    
+    # try catch block for when a roster slot is empty
+    try:
+        l.append(soup.find("a").get_text().encode("utf-8"))
+        text = soup.find("td", {"class":"playertablePlayerName"}).get_text()
+        print(text)
+        l.append(re.findall("^[\w\d\s.-]+,\s([\w]+)", text)[0].encode("utf-8"))
+    except AttributeError:
+        l.append("NA")
+        l.append("NA")
+    
+    # try catch block for extracting a player's health status (DTD, D7, D60, etc.)
+    try:
+        l.append(soup.find("span", {"style":"font-weight:bold;color: red;"}).get_text().encode("utf-8"))
+    except AttributeError:
+        l.append("HE")  # HE appended for healthy players
+    
+    if starters:
+        # append player statistics
+        stats = soup.find_all("td", {"class":"playertableStat "})
+        for s in stats:
+            l.append(s.get_text().encode("utf-8"))
+    
+        # try catch block for appending a player's totals. If the player was not playing, the total is embedded in a different tag
+        try:
+            l.append(soup.find("td", {"class":"playertableStat appliedPoints appliedPointsProGameFinal"}).get_text().encode("utf-8"))
+        except AttributeError:
+            l.append(soup.find("td", {"class":"playertableStat appliedPoints"}).get_text().encode("utf-8"))
+    
+    return l
+
+def write_rosters(batters, pitchers, bench, id, file_loc, day):
+    
+    file_loc += "/" + day
+    if not os.path.exists(file_loc):
+        os.mkdir(file_loc)
+    
+    batters_file = os.path.join(file_loc, "team_" + id + "_batters.txt")
+    pitchers_file = os.path.join(file_loc, "team_" + id + "_pitchers.txt")
+    bench_file = os.path.join(file_loc, "team_" + id + "_bench.txt")
+    
+    write_roster(batters, batters_file)
+    write_roster(pitchers, pitchers_file)
+    write_roster(bench, bench_file)
+
+def write_roster(roster, f):
+
+    out_file = open(f, "w")
+    for p in roster:
+        for s in p:
+            out_file.write(s + "\n")
+    out_file.close()
     return
 
 main()
-
-def test_this():
-    
-    week = get_week()
-    boxscore_urls = get_full_boxscore_urls(week)
-    for b in boxscore_urls:
-        scrape_daily_urls(b)
-
-#test_this()
 
 
 

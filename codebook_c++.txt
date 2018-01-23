@@ -1,0 +1,79 @@
+CODEBOOK
+
+###### team data ######
+team name: 			teamName, 			string, 	stores the team name
+owner name: 		ownerName, 			string, 	stores the team's owner
+team id:			teamId,				integer,	stores each team's unique identification number (a number 1 through 12)
+wins: 				wins, 				integer, 	stores the team's wins
+losses: 			losses, 			integer, 	stores the team's losses
+ties: 				ties, 				integer, 	stores the team's ties
+streak: 			streak, 			string, 	stores the team's streak in the format "most recent win/loss/tie" + "streak of win/loss/tie"
+pitchers started: 	pitchersStarted, 	integer, 	stores the number of starting pitchers a team used for the week
+pitching limit: 	pitchingLimit, 		integer, 	stores the max number of starting pitchers a team is allowed
+acquisitions: 		acquisitions, 		integer, 	number of players a team acquired during the week
+acquisitions limit: acquisitionsLimit, 	integer, 	number of players a team is allowed to acquire during a week
+winner:				winner,				boolean,	true if team won that week, false otherwise
+
+runs:				runs,				int,		stores total runs scored
+singels:			singles,			int,		stores total singles hit
+doubles:			doubles,			int,		stores total doubles hit
+triples:			triples,			int,		stores total triples hit
+home runs:			homeRuns,			int,		stores total home runs hit
+runs batted in:		runsBattedIn,		int,		stores total runs batted in
+walks, batters:		walksBatters,		int,		stores total walks from batters
+strikeouts, batters:strikeoutsBatters,	int,		stores total strikeouts from batters
+hit by pitches:		hitByPitches,		int,		stores total hit by pitches
+stolen bases:		stolenBases,		int,		stores total stolen bases
+caught stealing:	caughtStealing,		int,		stores total number of times batters were caught stealing
+cycles:				cycles,				int,		stores total number of cycles
+outfield assists:	outfieldAssists,	int,		stores total outfield assists recorded
+errors:				errors,				int,		stores total number of errors recorded
+batting points:		battingPoints,		int,		stores total points acquired from batters
+
+innings pitched:	inningsPitched,		double,		stores total innings pitched
+hits allowed:		hits,				int,		stores number of hits pitchers allowed
+earned runs allowed:earnedRuns,			int,		stores number of earned runs allowed
+walks, pitchers:	walksPitchers,		int,		stores total walks allowed
+hit batters:		hitBatters,			int,		stores total hit batters
+strikeouts, pitchers:strikeoutsPitchers,int,		stores total number of strikeouts recorded
+quality starts:		qualityStarts,		int,		stores total number of quality starts
+no hitters:			noHitters,			int,		stores total number of no hitters recorded
+perfect games:		perfectGames,		int,		stores total number of perfect games
+saves:				saves,				int,		stores total saves recorded
+holds:				holds,				int,		stores total holds recorded
+pitching points:	pitchingPoints,		int,		stores total points acquired from pitchers
+
+total bases:		totalBases,			int,		stores a team's total bases ( = singles + 2*doubles + 3*triples + 4*homeRuns + walksBatters + hitByPitches + stolenBases)
+outs recorded:		outs,				int,		stores innings pitched converted to total outs
+yoshi egg:			yoshiEggs,			int,		stores saves plus holds ( = saves + holds)
+modified WHIP:		templeRatio,		double,		stores a team's resilience at allowing runners to score ( = earnedRuns / (hits + walksPitchers + hitBatters))
+total points:		totalPoints,		int,		stores total points scored between batters and pitchers ( = battingPoints + pitchingPoints)
+
+list of batters:	batters,			vector,		vector storing player data structs for batters
+list of pitchers:	pitchers,			vector,		vector storing player data structs for pitchers
+bench players:		benchPlayers,		vector,		vector storing bench player structs for bench players
+entire roster:		allPlayers,			vector,		vector storing names of all players on roster for each day in matchup (including bench)		
+entire roster:		rosters,			array		array of pointers pointing to each daily roster
+pointer to batters:	battersPtr,			pointer,	pointer to batters
+pointer to pitchers:pitchersPtr,		pointer,	pointer to pitchers
+pointer to bench:	benchPtr,			pointer,	pointer to bench players
+
+###### player data ######
+player:				playerName,			string,			stores player's name
+slot:				slot,				string,			stores player's slot on roster
+team:				teamName,			string,			stores player's actual team (in real life)
+health:				health,				string,			stores player's health status (DL60, DTD, etc.); healthy players labeled with HE
+statistics:			playerStats,		int 2d array	stores player's statistics through entire week
+														[ Day 1, Runs, Singles, Doubles, ... Errors, Outfield Assists, Total]
+														[ Day 2, Runs, Singles, Doubles, ... Errors, Outfield Assists, Total]
+															.															.
+															.															.
+															.															.
+														[ Day 7, Runs, Singles, Doubles, ... Errors, Outfield Assists, Total]
+														NOTE: arrays for pitchers will contain number of outs recorded as opposed to innings pitched
+
+###### bench player data ######
+player:				playerName,			string,			stores player's name
+slot:				slot,				string,			stores player's slot on roster
+team:				teamName,			string,			stores player's actual team (in real life)
+health:				health,				string,			stores player's health status (DL60, DTD, etc.); healthy players labeled with HE
