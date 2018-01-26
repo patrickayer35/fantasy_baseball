@@ -14,6 +14,7 @@ acquisitions: 		acquisitions, 		integer, 	number of players a team acquired duri
 acquisitions limit: acquisitionsLimit, 	integer, 	number of players a team is allowed to acquire during a week
 winner:				winner,				boolean,	true if team won that week, false otherwise
 roster changes:		isLuigi,			boolean,	true if team made 0 roster moves/changes throughout the matchup (determined while reading in roster data)
+over pitching limit:isOver,				boolean,	true if a team exceeded their pitching limit (pitchersStarted > pitchingLimit)
 
 runs:				runs,				int,		stores total runs scored
 singels:			singles,			int,		stores total singles hit
@@ -50,29 +51,29 @@ yoshi egg:			yoshiEggs,			int,		stores saves plus holds ( = saves + holds)
 modified WHIP:		templeRatio,		double,		stores a team's resilience at allowing runners to score ( = earnedRuns / (hits + walksPitchers + hitBatters))
 total points:		totalPoints,		int,		stores total points scored between batters and pitchers ( = battingPoints + pitchingPoints)
 
-list of batters:	batters,			vector,		vector storing player data structs for batters
-list of pitchers:	pitchers,			vector,		vector storing player data structs for pitchers
-bench players:		benchPlayers,		vector,		vector storing bench player structs for bench players
-pointer to batters:	battersPtr,			pointer,	pointer to batters
-pointer to pitchers:pitchersPtr,		pointer,	pointer to pitchers
-pointer to bench:	benchPtr,			pointer,	pointer to bench players
+days:				dailyRosters,		vector,		stores day data structures for all days of the matchup
 
-###### player data ######
+###### batter data (structure) ######
 player:				playerName,			string,			stores player's name
 slot:				slot,				string,			stores player's slot on roster
 team:				teamName,			string,			stores player's actual team (in real life)
-health:				health,				string,			stores player's health status (DL60, DTD, etc.); healthy players labeled with HE
-statistics:			playerStats,		int 2d array	stores player's statistics through entire week
-														[ Day 1, Runs, Singles, Doubles, ... Errors, Outfield Assists, Total]
-														[ Day 2, Runs, Singles, Doubles, ... Errors, Outfield Assists, Total]
-															.															.
-															.															.
-															.															.
-														[ Day 7, Runs, Singles, Doubles, ... Errors, Outfield Assists, Total]
-														NOTE: arrays for pitchers will contain number of outs recorded as opposed to innings pitched
+statistics:			playerStats,		int array,		stores player's statistics for a day
+														[ Runs, Singles, Doubles, ... Errors, Outfield Assists, Total]
 
-###### bench player data ######
+###### pitcher data (structure) ######
 player:				playerName,			string,			stores player's name
 slot:				slot,				string,			stores player's slot on roster
 team:				teamName,			string,			stores player's actual team (in real life)
-health:				health,				string,			stores player's health status (DL60, DTD, etc.); healthy players labeled with HE
+statistics:			playerStats,		int array,		stores player's statistics for a day
+														[ Innings pitched, Hits, Earned runs, ... Saves, Holds, Total]
+
+###### bench player data (structure) ######
+player:				playerName,			string,			stores player's name
+slot:				slot,				string,			stores player's slot on roster
+team:				teamName,			string,			stores player's actual team (in real life)
+
+###### day data class ######
+date:				date,				string,			holds the day's date
+batters:			batters,			vector,			holds all batter's statistics for that day
+pitchers:			pitchers,			vector,			holds all pitcher's statistics for that day
+bench players:		bench,				vector,			holds all bench player's data for that day
