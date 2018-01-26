@@ -39,6 +39,10 @@ private:
 	vector<Batter*> batters;
 	vector<Pitcher*> pitchers;
 	vector<BenchPlayer*> bench;
+	int batterCount;
+	int pitcherCount;
+	int benchCount;
+	int rosterCount;
 	
 public:
 	
@@ -49,13 +53,18 @@ public:
     void appendBatter(Batter* const b);
 	void appendPitcher(Pitcher* const p);
 	void appendBenchPlayer(BenchPlayer* const p);
+	void setRosterCount();
 	
 	string getDate();
 	vector<Batter*> getBatters();
 	vector<Pitcher*> getPitchers();
 	vector<BenchPlayer*> getBench();
+	int getBatterCount();
+	int getPitcherCount();
+	int getBenchCount();
+	int getRosterCount();
 	
-	bool isSame(Day* const d);
+	bool isSameRoster(Day* const d);
 	
 };
 
