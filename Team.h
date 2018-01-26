@@ -19,9 +19,9 @@ private:
 	int		pitchingLimit;
 	int		acquisitions;
 	int 	acquisitionsLimit;
-	bool	winner;
-	bool	luigi;
-	bool	overPitchingLimit;
+	bool	winner;				// true if team won their matchup
+	bool	luigi;				// true if team is a Luigi (0 roster changes during matchup)
+	bool	overPitchingLimit;	// true if pitchersStarted > pitchingLimit
 	
 	int 	runs;
 	int		singles;
