@@ -1,7 +1,7 @@
 #ifndef Team_h
 #define Team_h
 
-#include "Day.h"
+#include "Roster.h"
 
 class Team
 {
@@ -58,7 +58,7 @@ private:
 	double	templeRatio;	// = earnedRuns / (hits + walksPitchers + hitBatters)
 	int		totalPoints;	// = battingPoints + pitchingPoints
 	
-	vector<Day*> dailyRosters;
+	vector<Roster*> dailyRosters;
 
 public:
 	
@@ -80,7 +80,7 @@ public:
 	void setLuigi(bool l);
 	void setoverPitchingLimit(bool o);
 	
-	void appendDay(Day* const d);
+	void appendRoster(Roster* const r);
 	
 	void setRuns(int r);
 	void setSingles(int s);
@@ -132,7 +132,7 @@ public:
 	bool	isLuigi();
 	bool	isOverPitchingLimit();
 	
-	vector<Day*> getDayData();
+	vector<Roster*> getRosterData();
 	
 	int getRuns();
 	int getSingles();
