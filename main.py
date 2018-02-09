@@ -11,20 +11,23 @@ def main():
         os.mkdir(main_directory)
     
     boxscore_urls = get_full_boxscore_urls(week)
+    f = os.path.join(main_directory, "matchups.txt")
+    matchup_file = open(f, "w")
     
     for b in boxscore_urls:
         print(b)
         away_data, home_data, days = get_team_data(b)
-        
+        matchup_file.write(away_data[1] + " " + home_data[1]+ "\n")
         matchup_str = "/Matchup" + away_data[1] + "vs" + home_data[1]
         file_loc = main_directory + matchup_str
         write_team_data(away_data, file_loc)
         write_team_data(home_data, file_loc)
-        
+        f = os.path.join(file_loc, "days.txt")
+        days_file = open(f, "w")
         # days data will be passed here
         for d in days:
-            print(d)
-            
+            #print(d)
+            days_file.write(d["Day"] + "\n")
             raw_html = urllib2.urlopen(d["Url"]).read()
             roster_soup = BeautifulSoup(raw_html).find_all("div", {"style":"width: 100%; margin-bottom: 40px; clear: both;"})
             
@@ -33,6 +36,8 @@ def main():
             
             write_rosters(away_batters, away_pitchers, away_bench, away_data[1], file_loc, d["Day"])
             write_rosters(home_batters, home_pitchers, home_bench, home_data[1], file_loc, d["Day"])
+        days_file.close()
+    out_file.close()
     
     return
 
@@ -258,10 +263,10 @@ def get_player_data(soup, starters):
         l.append("NA")
     
     # try catch block for extracting a player's health status (DTD, D7, D60, etc.)
-    try:
-        l.append(soup.find("span", {"style":"font-weight:bold;color: red;"}).get_text().encode("utf-8"))
-    except AttributeError:
-        l.append("HE")  # HE appended for healthy players
+    #try:
+    #    l.append(soup.find("span", {"style":"font-weight:bold;color: red;"}).get_text().encode("utf-8"))
+    #except AttributeError:
+    #    l.append("HE")  # HE appended for healthy players
     
     if starters:
         # append player statistics
@@ -299,6 +304,7 @@ def write_roster(roster, f):
             out_file.write(s + "\n")
     out_file.close()
     return
+    
 
 main()
 
