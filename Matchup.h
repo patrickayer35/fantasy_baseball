@@ -19,8 +19,9 @@ private:
     Team homeTeam;      Team* homeTeamPtr;
     Team winningTeam;   Team* winnerPtr;
     Team losingTeam;    Team* loserPtr;
-    bool winner;
-    int  matchupDiff;
+    bool    winner;
+    int     matchupDiff;
+    string  matchupStr;
     
 public:
     
@@ -28,11 +29,13 @@ public:
     ~Matchup();
     
     void setWinnersAndLosers();
+    void setMatchupString(string s);
     
     Team* getAwayTeam();
     Team* getHomeTeam();
     Team* getWinner();
     Team* getLoser();
+    string getMatchupString();
     bool hasAWinner();
     
 };

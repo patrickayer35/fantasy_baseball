@@ -14,11 +14,17 @@ Matchup::Matchup()
     homeTeamPtr = &homeTeam;
     winnerPtr = nullptr;
     loserPtr = nullptr;
-    matchupDiff = 0;
     winner = true;
+    matchupDiff = 0;
+    matchupStr = "";
 }
 
 Matchup::~Matchup() {}
+
+void Matchup::setMatchupString(string s)
+{
+    matchupStr = s;
+}
 
 void Matchup::setWinnersAndLosers()
 {
@@ -58,6 +64,11 @@ Team* Matchup::getWinner()
 Team* Matchup::getLoser()
 {
     return loserPtr;
+}
+
+string Matchup::getMatchupString()
+{
+    return matchupStr;
 }
 
 bool Matchup::hasAWinner()
