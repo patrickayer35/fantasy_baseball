@@ -497,6 +497,9 @@ void Team::printTeamInfo()
     cout << "Owner: " << ownerName << "\n";
     cout << "Wins: " << wins << "\n";
     cout << "Losses: " << losses << "\n";
+    cout << "Ties: " << ties << "\n";
+    cout << "Standing: " << standing << "\n";
+    cout << "Games back: " << gamesBack << "\n";
 }
 
 
