@@ -15,6 +15,7 @@ using namespace std;
 
 int getWeek();
 void fillScoreboard(Scoreboard* s, int week);
+void setTeamInfo(Matchup* m, bool away, string teamId, int week);
 
 int main()
 {
@@ -64,8 +65,8 @@ int getWeek()
 void fillScoreboard(Scoreboard* s, int week)
 {
     //string matchups[6] = { "Matchup4vs10", "Matchup5vs3", "Matchup6vs2", "Matchup8vs1", "Matchup11vs7", "Matchup12vs9" };
-    int teams[12] = { 4, 10, 5, 3, 6, 2, 8, 1, 11, 7, 12, 9 };
-    string days[8]     = { "Apr 2", "Apr 3", "Apr 4", "Apr 5", "Apr 6", "Apr 7", "Apr 8", "Apr 9" };
+    string teams[12] = { "4", "10", "5", "3", "6", "2", "8", "1", "11", "7", "12", "9" };
+    string days[8]   = { "Apr 2", "Apr 3", "Apr 4", "Apr 5", "Apr 6", "Apr 7", "Apr 8", "Apr 9" };
     //string away_id, home_id;
     //ifstream scoreboardFile("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
                             //to_string(week) + "/matchups.txt");
@@ -79,60 +80,11 @@ void fillScoreboard(Scoreboard* s, int week)
     for (int i = 0; i < 12; i += 2)
     {
         Matchup* matchup = new Matchup;
-        string matchupStr = "/Matchup" + to_string(teams[i]) + "vs" + to_string(teams[i + 1]);
-        string teamName, owner, streak, standing;
-        int teamId, wins, losses, ties, gamesBack, ps, pl, acq, acql;
+        matchup->setMatchupString("/Matchup" + teams[i] + "vs" + teams[i + 1]);
+        //string matchupStr = "/Matchup" + to_string(teams[i]) + "vs" + to_string(teams[i + 1]);
         
-        ifstream awayTeamFile("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
-                              to_string(week) + matchupStr + "/team_" + to_string(teams[i]) + ".txt");
-        //cout << "/Users/patrickayer/Desktop/fantasy/baseball/Week" << to_string(week) << matchupStr << "/team_" << to_string(teams[i]) << ".txt\n";
-        
-        //awayTeamFile.ignore();
-        getline(awayTeamFile, teamName);
-        cout << teamName << "\n";
-        awayTeamFile >> teamId; awayTeamFile.ignore(); getline(awayTeamFile, owner);
-        //awayTeamFile >> owner;
-        awayTeamFile >> wins >> losses >> ties >> streak >> standing >> gamesBack >> ps >> pl >> acq >> acql;
-        
-        matchup->getAwayTeam()->setTeamName(teamName);
-        matchup->getAwayTeam()->setTeamId(teamId);
-        matchup->getAwayTeam()->setOwnerName(owner);
-        matchup->getAwayTeam()->setWins(wins);
-        matchup->getAwayTeam()->setLosses(losses);
-        matchup->getAwayTeam()->setTies(ties);
-        matchup->getAwayTeam()->setStreak(streak);
-        matchup->getAwayTeam()->setStanding(standing);
-        matchup->getAwayTeam()->setGamesBack(gamesBack);
-        matchup->getAwayTeam()->setPitchersStarted(ps);
-        matchup->getAwayTeam()->setPitchingLimit(pl);
-        matchup->getAwayTeam()->setAcquisitions(acq);
-        matchup->getAwayTeam()->setPitchingLimit(acql);
-        
-        awayTeamFile.close();
-        
-        ifstream homeTeamFile("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
-                              to_string(week) + matchupStr + "/team_" + to_string(teams[i + 1]) + ".txt");
-        
-        //homeTeamFile.ignore();
-        getline(homeTeamFile, teamName);
-        homeTeamFile >> teamId; homeTeamFile.ignore(); getline(homeTeamFile, owner);
-        homeTeamFile >> wins >> losses >> ties >> streak >> standing >> gamesBack >> ps >> pl >> acq >> acql;
-        
-        matchup->getHomeTeam()->setTeamName(teamName);
-        matchup->getHomeTeam()->setTeamId(teamId);
-        matchup->getHomeTeam()->setOwnerName(owner);
-        matchup->getHomeTeam()->setWins(wins);
-        matchup->getHomeTeam()->setLosses(losses);
-        matchup->getHomeTeam()->setTies(ties);
-        matchup->getHomeTeam()->setStreak(streak);
-        matchup->getHomeTeam()->setStanding(standing);
-        matchup->getHomeTeam()->setGamesBack(gamesBack);
-        matchup->getHomeTeam()->setPitchersStarted(ps);
-        matchup->getHomeTeam()->setPitchingLimit(pl);
-        matchup->getHomeTeam()->setAcquisitions(acq);
-        matchup->getHomeTeam()->setPitchingLimit(acql);
-        
-        homeTeamFile.close();
+        setTeamInfo(matchup, true, teams[i], week);
+        setTeamInfo(matchup, false, teams[i + 1], week);
         
         matchup->getAwayTeam()->printTeamInfo();
         matchup->getHomeTeam()->printTeamInfo();
@@ -140,12 +92,13 @@ void fillScoreboard(Scoreboard* s, int week)
         s->appendMatchup(matchup);
         
     }
+    return;
 }
 
-void setTeamInfo(Matchup* m, int teamType)
+void setTeamInfo(Matchup* m, bool away, string teamId, int week)
 {
     Team* teamPtr;
-    if (teamType == 1)
+    if (away)
     {
         teamPtr = m->getAwayTeam();
     }
@@ -153,6 +106,31 @@ void setTeamInfo(Matchup* m, int teamType)
     {
         teamPtr = m->getHomeTeam();
     }
+    
+    ifstream teamFile("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
+                      to_string(week) + m->getMatchupString() + "/team_" + teamId + ".txt");
+    
+    string strData;
+    int    intData;
+    
+    getline(teamFile, strData); teamPtr->setTeamName(strData);
+    teamFile >> intData;        teamPtr->setTeamId(intData);
+    teamFile.ignore();
+    getline(teamFile, strData); teamPtr->setOwnerName(strData);
+    teamFile >> intData;        teamPtr->setWins(intData);
+    teamFile >> intData;        teamPtr->setLosses(intData);
+    teamFile >> intData;        teamPtr->setTies(intData);
+    teamFile >> strData;        teamPtr->setStreak(strData);
+    teamFile >> strData;        teamPtr->setStanding(strData);
+    teamFile >> intData;        teamPtr->setGamesBack(intData);
+    teamFile >> intData;        teamPtr->setPitchersStarted(intData);
+    teamFile >> intData;        teamPtr->setPitchingLimit(intData);
+    teamFile >> intData;        teamPtr->setAcquisitions(intData);
+    teamFile >> intData;        teamPtr->setPitchingLimit(intData);
+    
+    teamFile.close();
+    
+    return;
 }
 
 
