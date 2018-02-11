@@ -166,7 +166,7 @@ bool Roster::hadPitching()
         }
         else
         {
-            if (pitchers[i]->stats[1] != 0)
+            if (pitchers[i]->stats[11] != 0)
             {
                 return true;
             }
