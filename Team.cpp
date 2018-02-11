@@ -500,6 +500,10 @@ void Team::printTeamInfo()
     cout << "Ties: " << ties << "\n";
     cout << "Standing: " << standing << "\n";
     cout << "Games back: " << gamesBack << "\n";
+    for (int i = 0; i < rosterCount; i++)
+    {
+        rosters[i]->printRoster();
+    }
 }
 
 
