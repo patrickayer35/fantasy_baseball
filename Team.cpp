@@ -8,6 +8,7 @@
 
 #include "inningsConversions.h"
 #include "Team.h"
+#include <iomanip>
 #include <iostream>
 
 Team::Team()
@@ -112,7 +113,7 @@ void Team::setStanding(string s)
     standing = s;
 }
 
-void Team::setGamesBack(int g)
+void Team::setGamesBack(double g)
 {
     gamesBack = g;
 }
@@ -228,7 +229,15 @@ void Team::setTotalPoints()
 
 void Team::setLuigi()
 {
-    
+    for (int i = 0; i < rosterCount - 1; i++)
+    {
+        if (!rosters[i]->isSameRoster(rosters[i + 1]))
+        {
+            luigi = false;
+            return;
+        }
+    }
+    luigi = true;
 }
 
 void Team::setOverPitchingLimit()
@@ -490,6 +499,44 @@ int Team::getTotalPoints()
     return totalPoints;
 }
 
+void Team::subtractPitchers()
+{
+    if (!overPitchingLimit)
+    {
+        return;
+    }
+    else
+    {
+        for (int i = rosterCount - 1; i >= 0; i--)
+        {
+            if (rosters[i]->hadPitching())
+            {
+                cout << rosters[i]->getDate() << endl;
+                vector<Pitcher*> pitchers = rosters[i]->getPitchers();
+                int count = rosters[i]->getPitcherCount();
+                cout << left << setw(4) << "#";
+                cout << left << setw(20) << "Name";
+                cout << left << setw(6) << "Outs";
+                cout << left << setw(20) << "Quality starts";
+                cout << left << setw(7) << "Saves";
+                cout << left << setw(7) << "Holds";
+                cout << left << setw(7) << "Points"; cout << "\n";
+                cout << "-----------------------------------------------------------------------\n";
+                for (int j = 0; j < count; j++)
+                {
+                    cout << j << left << setw(3) << ".";
+                    cout << left << setw(20) << pitchers[j]->playerName;;
+                    cout << left << setw(6) << pitchers[j]->stats[0];
+                    cout << left << setw(20) << pitchers[j]->stats[6];
+                    cout << left << setw(7) << pitchers[j]->stats[9];
+                    cout << left << setw(7) << pitchers[j]->stats[10];
+                    cout << left << setw(7) << pitchers[j]->stats[11] << "\n";
+                }
+            }
+        }
+    }
+}
+
 void Team::printTeamInfo()
 {
     cout << "Team info for " << teamId << ":\n";
@@ -513,8 +560,16 @@ void Team::printCalculatatedStats()
     cout << "Total bases: " << totalBases << "\n";
     cout << "Innings pitched: " << inningsPitched << "\n";
     cout << "Yoshi eggs: " << yoshiEggs << "\n";
-    cout << "Temple ratio: " << templeRatio << "\n";
+    cout << "Temple ratio: " << fixed << showpoint << setprecision(2) << templeRatio << "\n";
     cout << "Total points: " << totalPoints << "\n";
+    if (luigi)
+    {
+        cout << "Is a luigi.\n";
+    }
+    else
+    {
+        cout << "Is not a luigi.\n";
+    }
 }
 
 

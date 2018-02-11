@@ -24,7 +24,7 @@ private:
     int		ties;
     string	streak;
     string  standing;
-    int     gamesBack;
+    double  gamesBack;
     int		pitchersStarted;
     int		pitchingLimit;
     int		acquisitions;
@@ -85,7 +85,7 @@ public:
     void setTies(int t);
     void setStreak(string s);
     void setStanding(string s);
-    void setGamesBack(int g);
+    void setGamesBack(double g);
     void setPitchersStarted(int p);
     void setPitchingLimit(int l);
     void setAcquisitions(int a);
@@ -159,6 +159,7 @@ public:
     double 	getTempleRatio();
     int		getTotalPoints();
     
+    void subtractPitchers();
     void printTeamInfo();
     void printCalculatatedStats();
     
