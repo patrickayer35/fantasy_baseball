@@ -110,8 +110,17 @@ void fillScoreboard(Scoreboard* s, int week)
         //matchup->getAwayTeam()->printTeamInfo();
         //matchup->getHomeTeam()->printTeamInfo();
         matchup->setWinnersAndLosers();
-        cout << matchup->getAwayTeam()->isWinner() << endl;
-        cout << matchup->getHomeTeam()->isWinner() << endl;
+        //cout << matchup->getAwayTeam()->isWinner() << endl;
+        //cout << matchup->getHomeTeam()->isWinner() << endl;
+        cout << matchup->getAwayTeam()->getTeamId() << endl;
+        cout << matchup->getAwayTeam()->getPitchingLimit() << endl;
+        cout << matchup->getAwayTeam()->getPitchersStarted() << endl;
+        matchup->getAwayTeam()->subtractPitchers();
+        cout << "------\n";
+        cout << matchup->getHomeTeam()->getTeamId() << endl;
+        cout << matchup->getHomeTeam()->getPitchingLimit() << endl;
+        cout << matchup->getHomeTeam()->getPitchersStarted() << endl;
+        matchup->getHomeTeam()->subtractPitchers();
         cout << "------\n";
         s->appendMatchup(matchup);
     }
@@ -124,6 +133,7 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
     ifstream teamFile(fileLoc);
     string strData;
     int    intData;
+    double fltData;
     
     getline(teamFile, strData); teamPtr->setTeamName(strData);
     teamFile >> intData;        teamPtr->setTeamId(intData);
@@ -134,7 +144,7 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
     teamFile >> intData;        teamPtr->setTies(intData);
     teamFile >> strData;        teamPtr->setStreak(strData);
     teamFile >> strData;        teamPtr->setStanding(strData);
-    teamFile >> intData;        teamPtr->setGamesBack(intData);
+    teamFile >> fltData;        teamPtr->setGamesBack(fltData);
     teamFile >> intData;        teamPtr->setPitchersStarted(intData);
     teamFile >> intData;        teamPtr->setPitchingLimit(intData);
     teamFile >> intData;        teamPtr->setAcquisitions(intData);
@@ -157,6 +167,7 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
                           + matchupStr + days[i] + "/team_" + teamId + "_bench.txt";
         setBench(roster, benchLoc);
         
+        roster->setRosterCount();
         teamPtr->appendRoster(roster);
     }
     
@@ -169,7 +180,7 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
     teamPtr->setYoshiEggs();
     teamPtr->setTempleRatio();
     teamPtr->setTotalPoints();
-    //teamPtr->setLuigi();
+    teamPtr->setLuigi();
     
 }
 
