@@ -31,13 +31,17 @@ void Matchup::setWinnersAndLosers()
     if (awayTeamPtr->getTotalPoints() > homeTeamPtr->getTotalPoints())
     {
         winnerPtr = awayTeamPtr;
+        awayTeamPtr->setWinner(true);
         loserPtr = homeTeamPtr;
+        homeTeamPtr->setWinner(false);
         matchupDiff = awayTeamPtr->getTotalPoints() - homeTeamPtr->getTotalPoints();
     }
     else if (homeTeamPtr->getTotalPoints() > awayTeamPtr->getTotalPoints())
     {
         winnerPtr = homeTeamPtr;
+        homeTeamPtr->setWinner(true);
         loserPtr = awayTeamPtr;
+        awayTeamPtr->setWinner(false);
         matchupDiff = homeTeamPtr->getTotalPoints() - awayTeamPtr->getTotalPoints();
     }
     else
