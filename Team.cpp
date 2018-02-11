@@ -506,6 +506,17 @@ void Team::printTeamInfo()
     }
 }
 
+void Team::printCalculatatedStats()
+{
+    cout << "Name: " << teamName << "\n";
+    cout << "Owner: " << ownerName << "\n";
+    cout << "Total bases: " << totalBases << "\n";
+    cout << "Innings pitched: " << inningsPitched << "\n";
+    cout << "Yoshi eggs: " << yoshiEggs << "\n";
+    cout << "Temple ratio: " << templeRatio << "\n";
+    cout << "Total points: " << totalPoints << "\n";
+}
+
 
 
 

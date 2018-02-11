@@ -160,6 +160,7 @@ public:
     int		getTotalPoints();
     
     void printTeamInfo();
+    void printCalculatatedStats();
     
 };
 
