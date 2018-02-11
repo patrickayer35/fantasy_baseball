@@ -73,6 +73,7 @@ public:
     int getRosterCount();
     
     bool isSameRoster(Roster* const d);
+    bool hadPitching();
     void printRoster();
     
 };

@@ -156,6 +156,25 @@ bool Roster::isSameRoster(Roster* const r)
     return true;
 }
 
+bool Roster::hadPitching()
+{
+    for (int i = 0; i < pitcherCount; i++)
+    {
+        if (pitchers[i]->stats[0] > 0)
+        {
+            return true;
+        }
+        else
+        {
+            if (pitchers[i]->stats[1] != 0)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void Roster::printRoster()
 {
     cout << "\nBATTERS---\n";
