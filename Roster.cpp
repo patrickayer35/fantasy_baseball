@@ -161,7 +161,7 @@ void Roster::printRoster()
     cout << "\nBATTERS---\n";
     for (int i = 0; i < batterCount; i++)
     {
-        cout << "Name: " << batters[i]->playerName << ", Slot: " << batters[i]->slot << " , Stats:";
+        cout << "Name: " << batters[i]->playerName << ", Slot: " << batters[i]->slot << ", Stats:";
         for (int j = 0; j < 15; j++)
         {
             cout << " " << batters[i]->stats[j];
@@ -171,12 +171,17 @@ void Roster::printRoster()
     cout << "\nPITCHERS---\n";
     for (int i = 0; i < pitcherCount; i++)
     {
-        cout << "Name: " << pitchers[i]->playerName << ", Slot: " << pitchers[i]->slot << " , Stats:";
+        cout << "Name: " << pitchers[i]->playerName << ", Slot: " << pitchers[i]->slot << ", Stats:";
         for (int j = 0; j < 12; j++)
         {
             cout << " " << pitchers[i]->stats[j];
         }
         cout << "\n";
+    }
+    cout << "\nBENCH---\n";
+    for (int i = 0; i < benchCount; i++)
+    {
+        cout << "Name: " << bench[i]->playerName << ", Slot: " << bench[i]->slot << ", Team: " << bench[i]->teamName << "\n";
     }
 }
 
