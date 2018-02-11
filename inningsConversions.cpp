@@ -7,6 +7,7 @@
 //
 
 #include "inningsConversions.h"
+#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -17,10 +18,17 @@ int convertInningsToOuts(double ips)
     ostringstream strs;
     strs << ips; string ipsString = strs.str();
     string delimiter = ".";
-    string fullInnings = ipsString.substr(0, ipsString.find(delimiter));
-    string outs = ipsString.substr(ipsString.find(delimiter) + 1, 1);
-    
-    return 3*atoi(fullInnings.c_str()) + atoi(outs.c_str());
+    int delimLoc = ipsString.find(delimiter);
+    if (delimLoc == -1)
+    {
+        return 3*ips;
+    }
+    else
+    {
+        string fullInnings = ipsString.substr(0, delimLoc);
+        string outs = ipsString.substr(delimLoc + 1, 1);
+        return 3*atoi(fullInnings.c_str()) + atoi(outs.c_str());
+    }
 }
 
 double convertOutsToInnings(int totalOuts)
