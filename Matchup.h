@@ -20,7 +20,7 @@ private:
     Team winningTeam;   Team* winnerPtr;
     Team losingTeam;    Team* loserPtr;
     bool    winner;
-    int     matchupDiff;
+    int     largestPointDiff;
     string  matchupStr;
     
 public:
@@ -30,13 +30,15 @@ public:
     
     void setWinnersAndLosers();
     void setMatchupString(string s);
+    void setLargestPointDiff();
     
-    Team* getAwayTeam();
-    Team* getHomeTeam();
-    Team* getWinner();
-    Team* getLoser();
-    string getMatchupString();
-    bool hasAWinner();
+    Team*   getAwayTeam();
+    Team*   getHomeTeam();
+    Team*   getWinner();
+    Team*   getLoser();
+    string  getMatchupString();
+    bool    hasAWinner();
+    int     getLargestPointDiff();
     
 };
 
