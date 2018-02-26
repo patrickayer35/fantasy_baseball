@@ -344,6 +344,11 @@ vector<Roster*> Team::getRosterData()
     return rosters;
 }
 
+int Team::getRosterCount()
+{
+    return rosterCount;
+}
+
 int Team::getRuns()
 {
     return runs;
@@ -444,6 +449,11 @@ int Team::getWalksPitchers()
     return walksPitchers;
 }
 
+int Team::getHitBatters()
+{
+    return hitBatters;
+}
+
 int Team::getStrikeoutsPitchers()
 {
     return strikeoutsPitchers;
@@ -499,42 +509,130 @@ int Team::getTotalPoints()
     return totalPoints;
 }
 
-void Team::subtractPitchers()
+// the pitchingLimitAdjustments() method solves the ESPN loophole with pitchers
+// loophole allows teams to start up to 13 pitchers a week, when the limit is set to 7 (one per day)
+// this loophole allows teams to rack up points from starting pitchers
+// the pitchingLimitAdjustment() method allows for the user to subtract points from teams who went over
+void Team::pitchingLimitAdjustments()
 {
-    if (!overPitchingLimit)
+    
+    string deductStr = "\n" + ownerName + ", pitchers deducted:\n";
+    cout << ownerName << ", " << teamName << endl;
+    for (int i = rosterCount - 1; i >= 0; i--)
     {
-        return;
-    }
-    else
-    {
-        for (int i = rosterCount - 1; i >= 0; i--)
+        if (rosters[i]->hadPitching())
         {
-            if (rosters[i]->hadPitching())
+            cout << rosters[i]->getDate() << endl;
+            cout << "Pitchers started / pitching limit: " << pitchersStarted << " / " << pitchingLimit << endl;
+            vector<Pitcher*> pitchers = rosters[i]->getPitchers();
+            int count = rosters[i]->getPitcherCount();
+            cout << left << setw(4) << "#";
+            cout << left << setw(20) << "Name";
+            cout << left << setw(6) << "Outs";
+            cout << left << setw(20) << "Quality starts";
+            cout << left << setw(7) << "Saves";
+            cout << left << setw(7) << "Holds";
+            cout << left << setw(7) << "Points"; cout << "\n";
+            cout << "-----------------------------------------------------------------------\n";
+            // display list of pitchers
+            for (int j = 0; j < count; j++)
             {
-                cout << rosters[i]->getDate() << endl;
-                vector<Pitcher*> pitchers = rosters[i]->getPitchers();
-                int count = rosters[i]->getPitcherCount();
-                cout << left << setw(4) << "#";
-                cout << left << setw(20) << "Name";
-                cout << left << setw(6) << "Outs";
-                cout << left << setw(20) << "Quality starts";
-                cout << left << setw(7) << "Saves";
-                cout << left << setw(7) << "Holds";
-                cout << left << setw(7) << "Points"; cout << "\n";
-                cout << "-----------------------------------------------------------------------\n";
-                for (int j = 0; j < count; j++)
+                cout << (j + 1) << left << setw(3) << ".";
+                cout << left << setw(20) << pitchers[j]->playerName;;
+                cout << left << setw(6) << pitchers[j]->stats[0];
+                cout << left << setw(20) << pitchers[j]->stats[6];
+                cout << left << setw(7) << pitchers[j]->stats[9];
+                cout << left << setw(7) << pitchers[j]->stats[10];
+                cout << left << setw(7) << pitchers[j]->stats[11] << "\n";
+            }
+            
+            bool stillDeducting = true;
+            while (stillDeducting)
+            {
+                int p = getPitcher(count);      // get pitcher to be deducted
+                if (p == -1)
                 {
-                    cout << j << left << setw(3) << ".";
-                    cout << left << setw(20) << pitchers[j]->playerName;;
-                    cout << left << setw(6) << pitchers[j]->stats[0];
-                    cout << left << setw(20) << pitchers[j]->stats[6];
-                    cout << left << setw(7) << pitchers[j]->stats[9];
-                    cout << left << setw(7) << pitchers[j]->stats[10];
-                    cout << left << setw(7) << pitchers[j]->stats[11] << "\n";
+                    stillDeducting = false;
                 }
+                else
+                {
+                    deductStr += deductPitcherTotals(pitchers[p - 1], rosters[i]);      // deduct points and return string
+                    deductStr += rosters[i]->getDate() + "\n";
+                    pitchersStarted -= 1;                                   // adjust pitcherStarted member
+                    setOverPitchingLimit();
+                    if (!overPitchingLimit)         // if team is no longer over the limit, exit method
+                    {
+                        cout << deductStr << endl;
+                        return;
+                    }
+                }
+            }
+            if (!overPitchingLimit)
+            {
+                cout << deductStr << endl;
+                return;
             }
         }
     }
+}
+
+int Team::getPitcher(int c)
+{
+    int p;
+    string str1 = "ERROR: input an integer.";
+    string str2 = "ERROR: input a valid pitcher.";
+    bool verifiedInput = false;
+    do
+    {
+        try
+        {
+            cout << "Subtract pitcher (-1 to exit): "; cin >> p;
+            if (!cin)
+            {
+                throw str1;
+            }
+            if (p < 1 || p > c)
+            {
+                if (p == -1)
+                {
+                    return p;
+                }
+                throw str2;
+            }
+            verifiedInput = true;
+        }
+        catch (string message)
+        {
+            cout << message << endl;
+            cin.clear();
+            cin.ignore(100, '\n');
+        }
+    }
+    while (!verifiedInput);
+    
+    return p;
+}
+
+string Team::deductPitcherTotals(Pitcher* const p, Roster* r)
+{
+    outs -= p->stats[0];
+    hits -= p->stats[1];
+    earnedRuns -= p->stats[2];
+    walksPitchers -= p->stats[3];
+    hitBatters -= p->stats[4];
+    strikeoutsPitchers -= p->stats[5];
+    qualityStarts -= p->stats[6];
+    noHitters -= p->stats[7];
+    perfectGames -= p->stats[8];
+    saves -= p->stats[9];
+    holds -= p->stats[10];
+    pitchingPoints -= p->stats[11];
+    
+    r->editTotalPoints(p->stats[11]);
+    
+    cout << p->playerName + " points deducted.\n";
+    
+    return p->playerName + ", " + to_string(p->stats[11]) + " points, ";
 }
 
 void Team::printTeamInfo()
@@ -571,6 +669,20 @@ void Team::printCalculatatedStats()
         cout << "Is not a luigi.\n";
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

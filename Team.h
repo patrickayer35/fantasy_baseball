@@ -123,6 +123,7 @@ public:
     bool    qualifiesForPitchingAwards();
     
     vector<Roster*> getRosterData();
+    int getRosterCount();
     
     int getRuns();
     int getSingles();
@@ -159,9 +160,11 @@ public:
     double 	getTempleRatio();
     int		getTotalPoints();
     
-    void subtractPitchers();
-    void printTeamInfo();
-    void printCalculatatedStats();
+    void   pitchingLimitAdjustments();
+    int    getPitcher(int c);
+    string deductPitcherTotals(Pitcher* const p, Roster* r);
+    void   printTeamInfo();
+    void   printCalculatatedStats();
     
 };
 
