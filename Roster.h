@@ -51,6 +51,7 @@ private:
     int pitcherCount;
     int benchCount;
     int rosterCount;
+    int totalPoints;
     
 public:
     
@@ -62,6 +63,8 @@ public:
     void appendPitcher(Pitcher* const p);
     void appendBenchPlayer(BenchPlayer* const p);
     void setRosterCount();
+    void setTotalPoints();
+    void editTotalPoints(int p);
     
     string getDate();
     vector<Batter*> getBatters();
@@ -71,6 +74,7 @@ public:
     int getPitcherCount();
     int getBenchCount();
     int getRosterCount();
+    int getTotalPoints();
     
     bool isSameRoster(Roster* const d);
     bool hadPitching();

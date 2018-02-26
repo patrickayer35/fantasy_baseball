@@ -16,6 +16,7 @@ Roster::Roster()
     pitcherCount = 0;
     benchCount = 0;
     rosterCount = 0;
+    totalPoints = 0;
 }
 
 Roster::~Roster()
@@ -62,6 +63,23 @@ void Roster::setRosterCount()
     rosterCount = batterCount + pitcherCount + benchCount;
 }
 
+void Roster::setTotalPoints()
+{
+    for (int i = 0; i < batterCount; i++)
+    {
+        totalPoints += batters[i]->stats[14];
+    }
+    for (int i = 0; i < pitcherCount; i++)
+    {
+        totalPoints += pitchers[i]->stats[11];
+    }
+}
+
+void Roster::editTotalPoints(int p)
+{
+    totalPoints -= p;
+}
+
 string Roster::getDate()
 {
     return date;
@@ -100,6 +118,11 @@ int Roster::getBenchCount()
 int Roster::getRosterCount()
 {
     return rosterCount;
+}
+
+int Roster::getTotalPoints()
+{
+    return totalPoints;
 }
 
 bool Roster::isSameRoster(Roster* const r)
