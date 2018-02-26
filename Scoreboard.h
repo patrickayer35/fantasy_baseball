@@ -29,13 +29,32 @@ public:
     
     void setWeek(int w);
     void appendMatchup(Matchup* const m);
-    void appendTeam(Team* const t);
+    void setTeams();
     
     int getWeek();
     vector<Matchup*> getMatchups();
     vector<Team*> getTeams();
     int getMatchupCount();
     int getTeamCount();
+    
+    vector<Team*> getBowserPowerAwardWinners();         // team with the most total bases, no award if 2 or more teams tie
+    
+    vector<Team*> getFalconPawnchAwardWinners();        // team with most total points, no award if 2 or more teams tie
+    
+    vector<Team*> getGimpAwardWinners();                // winning team of matchup with smallest point differential
+                                                        // tie goes to team with most total points, if still a tie, no award
+    
+    vector<Team*> getHomeRunBatAwardWinners();          // team with most home runs, no award if 2 or more teams tie
+    
+    vector<Team*> getImReallyFeelingItAwardWinners();   // team with most hit batters, no award if 2 or more teams tie
+    
+    vector<Team*> getTargetSmasherWinners();            // team with most strikeouts by pitcher, no award if 2 ore more teams tie
+    
+    vector<Team*> getLittleMacComebackAwardWinners();   // team with largest comeback, compare point differentials throughout the week
+                                                        // winning team with largest defecit overcome wins award
+    
+    vector<Team*> getDaybreakWinners();                 // team with the most pitching strikeouts, most quality starts, and least earned runs
+                                                        // no award if 2 or more teams tie (in all three categories), a team can still win if they're tied in one or two of the categories, however
     
 };
 
