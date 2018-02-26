@@ -15,12 +15,17 @@ using namespace std;
 
 int getWeek();
 void fillScoreboard(Scoreboard* s, int week);
-//void setTeamInfo(Matchup* m, bool away, string teamId, int week);
-//void setTeamInfo(Team* teamPtr, string fileLoc, string days[], int numOfDays);
 void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, string days[], int numOfDays);
 void setBatters(Roster* rosterPtr, string fileLoc);
 void setPitchers(Roster* rosterPtr, string fileLoc);
 void setBench(Roster* rosterPtr, string fileLoc);
+void writeAwardToFile(Team* t, int week, string award);
+void bowserPower(Scoreboard* s);
+void falconPawnch(Scoreboard* s);
+void gimp(Scoreboard*s);
+void homeRunBat(Scoreboard* s);
+void littleMacComeback(Scoreboard* s);
+void displayAwards(Scoreboard* s);
 int returnInteger(string data);
 
 int main()
@@ -29,11 +34,7 @@ int main()
     Scoreboard scoreboard; Scoreboard* scoreboardPtr = &scoreboard;
     scoreboardPtr->setWeek(week);
     fillScoreboard(scoreboardPtr, week);
-    //cout << returnInteger("34.2");
-    //cout << "70.2: " << convertInningsToOuts(70.2) << endl;
-    //cout << "341: " << convertOutsToInnings(341) << endl;
-    //cout << returnInteger("--") << "\n";
-    //cout << returnInteger("5") << "\n";
+    displayAwards(scoreboardPtr);
     
     return 0;
 }
@@ -50,9 +51,13 @@ int getWeek()
         {
             cout << "Week: "; cin >> week;
             if (!cin)
+            {
                 throw str1;
+            }
             if (week < 1 || week > 19)
+            {
                 throw str2;
+            }
             verifiedInput = true;
         }
         catch (string message)
@@ -61,12 +66,6 @@ int getWeek()
             cin.clear();
             cin.ignore(100, '\n');
         }
-        /*
-        catch (int)
-        {
-            cout << "ERROR: input a valid week.\n";
-        }
-         */
     }
     while (!verifiedInput);
     
@@ -77,7 +76,7 @@ void fillScoreboard(Scoreboard* s, int week)
 {
     //string matchups[6] = { "Matchup4vs10", "Matchup5vs3", "Matchup6vs2", "Matchup8vs1", "Matchup11vs7", "Matchup12vs9" };
     string teams[12] = { "4", "10", "5", "3", "6", "2", "8", "1", "11", "7", "12", "9" };
-    string days[8]   = { "/Apr 2", "/Apr 3", "/Apr 4", "/Apr 5", "/Apr 6", "/Apr 7", "/Apr 8", "/Apr 9" };
+    string days[8]   = { "Apr 2", "Apr 3", "Apr 4", "Apr 5", "Apr 6", "Apr 7", "Apr 8", "Apr 9" };
     //string away_id, home_id;
     //ifstream scoreboardFile("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
                             //to_string(week) + "/matchups.txt");
@@ -110,20 +109,32 @@ void fillScoreboard(Scoreboard* s, int week)
         //matchup->getAwayTeam()->printTeamInfo();
         //matchup->getHomeTeam()->printTeamInfo();
         matchup->setWinnersAndLosers();
+        matchup->setLargestPointDiff();
         //cout << matchup->getAwayTeam()->isWinner() << endl;
         //cout << matchup->getHomeTeam()->isWinner() << endl;
-        cout << matchup->getAwayTeam()->getTeamId() << endl;
-        cout << matchup->getAwayTeam()->getPitchingLimit() << endl;
-        cout << matchup->getAwayTeam()->getPitchersStarted() << endl;
-        matchup->getAwayTeam()->subtractPitchers();
-        cout << "------\n";
-        cout << matchup->getHomeTeam()->getTeamId() << endl;
-        cout << matchup->getHomeTeam()->getPitchingLimit() << endl;
-        cout << matchup->getHomeTeam()->getPitchersStarted() << endl;
-        matchup->getHomeTeam()->subtractPitchers();
-        cout << "------\n";
+        //cout << matchup->getAwayTeam()->getTeamId() << endl;
+        //cout << matchup->getAwayTeam()->getPitchingLimit() << endl;
+        //cout << matchup->getAwayTeam()->getPitchersStarted() << endl;
+        /*
+        if (matchup->getAwayTeam()->isOverPitchingLimit())
+        {
+            matchup->getAwayTeam()->pitchingLimitAdjustments();
+        }
+         */
+        //cout << "------\n";
+        //cout << matchup->getHomeTeam()->getTeamId() << endl;
+        //cout << matchup->getHomeTeam()->getPitchingLimit() << endl;
+        //cout << matchup->getHomeTeam()->getPitchersStarted() << endl;
+        /*
+        if (matchup->getHomeTeam()->isOverPitchingLimit())
+        {
+            matchup->getHomeTeam()->pitchingLimitAdjustments();
+        }
+         */
+        //cout << "------\n";
         s->appendMatchup(matchup);
     }
+    s->setTeams();
 }
 
 //void setTeamInfo(Team* teamPtr, string fileLoc, string days[], int numOfDays)
@@ -158,16 +169,17 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
         roster->setDate(days[i]);
         
         string batterLoc = "/Users/patrickayer/Desktop/fantasy/baseball/Week" + to_string(week)
-                           + matchupStr + days[i] + "/team_" + teamId + "_batters.txt";
+                           + matchupStr + "/" + days[i] + "/team_" + teamId + "_batters.txt";
         setBatters(roster, batterLoc);
         string pitcherLoc = "/Users/patrickayer/Desktop/fantasy/baseball/Week" + to_string(week)
-                            + matchupStr + days[i] + "/team_" + teamId + "_pitchers.txt";
+                            + matchupStr + "/" + days[i] + "/team_" + teamId + "_pitchers.txt";
         setPitchers(roster, pitcherLoc);
         string benchLoc = "/Users/patrickayer/Desktop/fantasy/baseball/Week" + to_string(week)
-                          + matchupStr + days[i] + "/team_" + teamId + "_bench.txt";
+                          + matchupStr + "/" + days[i] + "/team_" + teamId + "_bench.txt";
         setBench(roster, benchLoc);
         
         roster->setRosterCount();
+        roster->setTotalPoints();
         teamPtr->appendRoster(roster);
     }
     
@@ -175,6 +187,10 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
     teamPtr->setPitchingStats();
     teamPtr->setOverPitchingLimit();
     teamPtr->setPitchingQualification();
+    if (teamPtr->isOverPitchingLimit())
+    {
+        teamPtr->pitchingLimitAdjustments();
+    }
     teamPtr->setTotalBases();
     teamPtr->setInningsPitched();
     teamPtr->setYoshiEggs();
@@ -250,6 +266,138 @@ void setBench(Roster* rosterPtr, string fileLoc)
         benchFile >> strData;           // temporarily for the bench player's health
         rosterPtr->appendBenchPlayer(benchPlayer);
     }
+}
+
+void writeAwardToFile(Team* t, int week, string award)
+{
+    ofstream outFile;
+    outFile.open("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
+                 to_string(week) + "/awards_team" + to_string(t->getTeamId()) + ".txt", ios::app);
+    outFile << award << "\n";
+    outFile.close();
+}
+
+void bowserPower(Scoreboard* s)
+{
+    vector<Team*> winners = s->getBowserPowerAwardWinners();
+    if (winners.size() == 0)
+    {
+        cout << "Bowser Power Award, no winners.\n";
+        return;
+    }
+    if (winners.size() == 1)
+    {
+        cout << "Bowser Power Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalBases() << " bases).\n";
+        string award = "Bowser Power Award (" + to_string(winners[0]->getTotalBases()) + " bases)";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Bowser Power Award, no winners, " << winners.size() << "-way tie.\n";
+    }
+}
+
+void falconPawnch(Scoreboard* s)
+{
+    vector<Team*> winners = s->getFalconPawnchAwardWinners();
+    if (winners.size() == 0)
+    {
+        cout << "Falcon PAWNCH Award, no winners.\n";
+        return;
+    }
+    if (winners.size() == 1)
+    {
+        cout << "Falcon PAWNCH Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalPoints() << " points).\n";
+        string award = "Falcon PAWNCH Award (" + to_string(winners[0]->getTotalPoints()) + " points)";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Falcon PAWNCH Award, no winners, " << winners.size() << "-way tie.\n";
+    }
+}
+
+void gimp(Scoreboard*s)
+{
+    vector<Team*> winners = s->getGimpAwardWinners();
+    if (winners.size() == 0)
+    {
+        cout << "Gimp Award, no winners.\n";
+        return;
+    }
+    if (winners.size() == 1)
+    {
+        cout << "Gimp Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalPoints() << " points).\n";
+        string award = "Gimp Award (" + to_string(winners[0]->getTotalPoints()) + " points)";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Gimp Award, no winners.\n";
+    }
+}
+
+void homeRunBat(Scoreboard* s)
+{
+    vector<Team*> winners = s->getHomeRunBatAwardWinners();
+    if (winners.size() == 0)
+    {
+        cout << "Home Run Bat Award, no winners.\n";
+        return;
+    }
+    if (winners.size() == 1)
+    {
+        cout << "Home Run Bat Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getHomeRuns() << " home runs).\n";
+        string award = "Home Run Bat Award (" + to_string(winners[0]->getHomeRuns()) + " home runs)";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Home Run Bat Award, no winners, " << winners.size() << "-way tie.\n";
+    }
+}
+
+void littleMacComeback(Scoreboard* s)
+{
+    vector<Team*> winners = s->getLittleMacComebackAwardWinners();
+    if (winners.size() == 0)
+    {
+        cout << "Little Mac Comeback Award, no winners.\n";
+        return;
+    }
+    if (winners.size() == 1)
+    {
+        cout << "Little Mac Comeback Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalPoints() << " points).\n";
+        string award = "Little Mac Comeback Award (" + to_string(winners[0]->getTotalPoints()) + " points)";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Little Mac Comeback Award, no winners, " << winners.size() << "-way tie.\n";
+    }
+}
+
+void displayAwards(Scoreboard* s)
+{
+    for (int i = 0; i < s->getTeamCount(); i++)
+    {
+        ofstream outFile;
+        outFile.open("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
+                     to_string(s->getWeek()) + "/awards_team" + to_string(s->getTeams()[i]->getTeamId()) + ".txt", ios::out);
+        outFile.close();
+    }
+    cout << "Awards for week " << s->getWeek() << endl;
+    bowserPower(s);
+    falconPawnch(s);
+    gimp(s);
+    homeRunBat(s);
+    littleMacComeback(s);
+    
 }
 
 int returnInteger(string data)
