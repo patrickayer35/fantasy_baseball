@@ -19,6 +19,9 @@ private:
     int week;
     int matchupCount;
     int teamCount;
+    int gimpAmount;
+    int littleMacComebackAmount;
+    int womboComboAmount;
     vector<Matchup*> matchups;
     vector<Team*> teams;
     
@@ -36,6 +39,9 @@ public:
     vector<Team*> getTeams();
     int getMatchupCount();
     int getTeamCount();
+    int getGimpAmount();
+    int getLittleMacComebackAmount();
+    int getWomboComboAmount();
     
     vector<Team*> getBowserPowerAwardWinners();         // team with the most total bases, no award if 2 or more teams tie
     
@@ -57,7 +63,19 @@ public:
     vector<Team*> getSqueakyHammerAwardWinners();       // team with fewest points scored, tie breaker goes to team with the most batting
                                                         // strikeouts
     
-    vector<Team*> getTargetSmasherWinners();            // team with most strikeouts by pitcher, no award if 2 ore more teams tie
+    vector<Team*> getSuperSonicAwardWinners();          // team with most stolen bases, no award if 2 or more teams tie
+    
+    vector<Team*> getTargetSmasherAwardWinners();       // team with most strikeouts by pitcher, no award if 2 ore more teams tie
+    
+    vector<Team*> getTempleBasementSurvivorAwardWinners();  // team with best ratio of ERA to baserunners allowed, no award if 2 or more
+                                                            // teams tie
+    
+    vector<Team*> getWomboComboAwardWinners();          // winning team that won by the greatest point differential, tie breaker goes
+                                                        // to team with most points
+    
+    vector<Team*> getYoshiEggAwardWinners();            // team with most saves + holds, no award if 2 or more teams tie
+    
+    vector<Team*> getYoureTooSlowAwardWinners();        // team with most strikeouts by batter, no award if 2 or more teams tie
     
     vector<Team*> getDaybreakWinners();                 // team with the most pitching strikeouts, most quality starts, and least earned runs
                                                         // no award if 2 or more teams tie (in all three categories), a team can still win if they're tied in one or two of the categories, however

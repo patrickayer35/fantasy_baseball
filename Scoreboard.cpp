@@ -14,6 +14,8 @@ Scoreboard::Scoreboard()
     week = 0;
     matchupCount = 0;
     teamCount = 0;
+    littleMacComebackAmount = 0;
+    womboComboAmount = 0;
 }
 
 Scoreboard::~Scoreboard()
@@ -70,13 +72,28 @@ int Scoreboard::getTeamCount()
     return teamCount;
 }
 
+int Scoreboard::getGimpAmount()
+{
+    return gimpAmount;
+}
+
+int Scoreboard::getLittleMacComebackAmount()
+{
+    return littleMacComebackAmount;
+}
+
+int Scoreboard::getWomboComboAmount()
+{
+    return womboComboAmount;
+}
+
 vector<Team*> Scoreboard::getBowserPowerAwardWinners()
 {
     vector<Team*> winners;
-    int target = 0;
+    int target = 0, bases;
     for (int i = 0; i < teamCount; i++)
     {
-        int bases = teams[i]->getTotalBases();
+        bases = teams[i]->getTotalBases();
         if (bases > target)
         {
             target = bases;
@@ -84,7 +101,7 @@ vector<Team*> Scoreboard::getBowserPowerAwardWinners()
     }
     for (int i = 0; i < teamCount; i++)
     {
-        int bases = teams[i]->getTotalBases();
+        bases = teams[i]->getTotalBases();
         if (bases == target)
         {
             winners.push_back(teams[i]);
@@ -96,10 +113,10 @@ vector<Team*> Scoreboard::getBowserPowerAwardWinners()
 vector<Team*> Scoreboard::getFalconPawnchAwardWinners()
 {
     vector<Team*> winners;
-    int target = 0;
+    int target = 0, points;
     for (int i = 0; i < teamCount; i++)
     {
-        int points = teams[i]->getTotalPoints();
+        points = teams[i]->getTotalPoints();
         if (points > target)
         {
             target = points;
@@ -107,7 +124,7 @@ vector<Team*> Scoreboard::getFalconPawnchAwardWinners()
     }
     for (int i = 0; i < teamCount; i++)
     {
-        int points = teams[i]->getTotalPoints();
+        points = teams[i]->getTotalPoints();
         if (points == target)
         {
             winners.push_back(teams[i]);
@@ -119,23 +136,24 @@ vector<Team*> Scoreboard::getFalconPawnchAwardWinners()
 vector<Team*> Scoreboard::getGimpAwardWinners()
 {
     vector<Team*> qualifiers;
-    int target = 1000;
+    int target = 1000, diff;
     for (int i = 0; i < matchupCount; i++)
     {
         if (matchups[i]->hasAWinner())
         {
-            int diff = matchups[i]->getMatchupPointDiff();
+            diff = matchups[i]->getMatchupPointDiff();
             if (diff < target)
             {
                 target = diff;
             }
         }
     }
+    gimpAmount = target;
     for (int i = 0; i < matchupCount; i++)
     {
         if (matchups[i]->hasAWinner())
         {
-            int diff = matchups[i]->getMatchupPointDiff();
+            diff = matchups[i]->getMatchupPointDiff();
             if (diff == target)
             {
                 qualifiers.push_back(matchups[i]->getWinner());
@@ -156,10 +174,10 @@ vector<Team*> Scoreboard::getGimpAwardWinners()
 vector<Team*> Scoreboard::getHomeRunBatAwardWinners()
 {
     vector<Team*> winners;
-    int target = 0;
+    int target = 0, hrs;
     for (int i = 0; i < teamCount; i++)
     {
-        int hrs = teams[i]->getHomeRuns();
+        hrs = teams[i]->getHomeRuns();
         if (hrs > target)
         {
             target = hrs;
@@ -167,7 +185,7 @@ vector<Team*> Scoreboard::getHomeRunBatAwardWinners()
     }
     for (int i = 0; i < teamCount; i++)
     {
-        int hrs = teams[i]->getHomeRuns();
+        hrs = teams[i]->getHomeRuns();
         if (hrs == target)
         {
             winners.push_back(teams[i]);
@@ -179,10 +197,10 @@ vector<Team*> Scoreboard::getHomeRunBatAwardWinners()
 vector<Team*> Scoreboard::getImReallyFeelingItAwardWinners()
 {
     vector<Team*> winners;
-    int target = 0;
+    int target = 0, hbs;
     for (int i = 0; i < teamCount; i++)
     {
-        int hbs = teams[i]->getHitBatters();
+        hbs = teams[i]->getHitBatters();
         if (hbs > target)
         {
             target = hbs;
@@ -190,7 +208,7 @@ vector<Team*> Scoreboard::getImReallyFeelingItAwardWinners()
     }
     for (int i = 0; i < teamCount; i++)
     {
-        int hbs = teams[i]->getHitBatters();
+        hbs = teams[i]->getHitBatters();
         if (hbs == target)
         {
             winners.push_back(teams[i]);
@@ -202,12 +220,12 @@ vector<Team*> Scoreboard::getImReallyFeelingItAwardWinners()
 vector<Team*> Scoreboard::getLittleMacComebackAwardWinners()
 {
     vector<Team*> qualifiers;
-    int target = 0;
+    int target = 0, diff;
     for (int i = 0; i < matchupCount; i++)
     {
         if (matchups[i]->hasAWinner())
         {
-            int diff = matchups[i]->getLargestPointDiff();
+            diff = matchups[i]->getLargestPointDiff();
             //matchups[i]->displayPointDifferentials();
             if (diff > target)
             {
@@ -215,11 +233,12 @@ vector<Team*> Scoreboard::getLittleMacComebackAwardWinners()
             }
         }
     }
+    littleMacComebackAmount = target;
     for (int i = 0; i < matchupCount; i++)
     {
         if (matchups[i]->hasAWinner())
         {
-            int diff = matchups[i]->getLargestPointDiff();
+            diff = matchups[i]->getLargestPointDiff();
             if (diff == target)
             {
                 qualifiers.push_back(matchups[i]->getWinner());
@@ -263,10 +282,10 @@ vector<Team*> Scoreboard::getPlankingLuigiAwardWinners()
 vector<Team*> Scoreboard::getSqueakyHammerAwardWinners()
 {
     vector<Team*> qualifiers;
-    int target = 1000;
+    int target = 1000, points;
     for (int i = 0; i < teamCount; i++)
     {
-        int points = teams[i]->getTotalPoints();
+        points = teams[i]->getTotalPoints();
         if (points < target)
         {
             target = points;
@@ -274,7 +293,7 @@ vector<Team*> Scoreboard::getSqueakyHammerAwardWinners()
     }
     for (int i = 0; i < teamCount; i++)
     {
-        int points = teams[i]->getTotalPoints();
+        points = teams[i]->getTotalPoints();
         if (points == target)
         {
             qualifiers.push_back(teams[i]);
@@ -284,9 +303,10 @@ vector<Team*> Scoreboard::getSqueakyHammerAwardWinners()
     {
         vector<Team*> winners;
         target = 0;
+        int ks;
         for (int i = 0; i < qualifiers.size(); i++)
         {
-            int ks = qualifiers[i]->getStrikeoutsBatters();
+            ks = qualifiers[i]->getStrikeoutsBatters();
             if (ks > target)
             {
                 target = ks;
@@ -294,7 +314,7 @@ vector<Team*> Scoreboard::getSqueakyHammerAwardWinners()
         }
         for (int i = 0; i < qualifiers.size(); i++)
         {
-            int ks = qualifiers[i]->getStrikeoutsBatters();
+            ks = qualifiers[i]->getStrikeoutsBatters();
             if (ks == target)
             {
                 winners.push_back(qualifiers[i]);
@@ -308,13 +328,160 @@ vector<Team*> Scoreboard::getSqueakyHammerAwardWinners()
     }
 }
 
-vector<Team*> Scoreboard::getTargetSmasherWinners()
+vector<Team*> Scoreboard::getSuperSonicAwardWinners()
 {
     vector<Team*> winners;
-    int target = 0;
+    int target = 0, sbs;
     for (int i = 0; i < teamCount; i++)
     {
-        int ks = teams[i]->getStrikeoutsPitchers();
+        sbs = teams[i]->getStolenBases();
+        if (sbs > target)
+        {
+            target = sbs;
+        }
+    }
+    for (int i = 0; i < teamCount; i++)
+    {
+        sbs = teams[i]->getStolenBases();
+        if (sbs == target)
+        {
+            winners.push_back(teams[i]);
+        }
+    }
+    return winners;
+}
+
+vector<Team*> Scoreboard::getTargetSmasherAwardWinners()
+{
+    vector<Team*> qualifiers;
+    vector<Team*> winners;
+    int target = 0, ks;
+    for (int i = 0; i < teamCount; i++)
+    {
+        if (teams[i]->qualifiesForPitchingAwards())
+        {
+            qualifiers.push_back(teams[i]);
+            ks = teams[i]->getStrikeoutsPitchers();
+            if (ks > target)
+            {
+                target = ks;
+            }
+        }
+    }
+    for (int i = 0; i < qualifiers.size(); i++)
+    {
+        ks = qualifiers[i]->getStrikeoutsPitchers();
+        if (ks == target)
+        {
+            winners.push_back(teams[i]);
+        }
+    }
+    return winners;
+}
+
+vector<Team*> Scoreboard::getTempleBasementSurvivorAwardWinners()
+{
+    vector<Team*> qualifiers;
+    vector<Team*> winners;
+    double target = 1000.00, tr;
+    for (int i = 0; i < teamCount; i++)
+    {
+        if (teams[i]->qualifiesForPitchingAwards())
+        {
+            qualifiers.push_back(teams[i]);
+            tr = teams[i]->getTempleRatio();
+            //cout << teams[i]->getOwnerName() << ", " << tr << endl;
+            if (tr < target)
+            {
+                target = tr;
+            }
+        }
+    }
+    //cout << "Target: " << target << endl;
+    for (int i = 0; i < qualifiers.size(); i++)
+    {
+        tr = qualifiers[i]->getTempleRatio();
+        if (tr == target)
+        {
+            winners.push_back(qualifiers[i]);
+        }
+    }
+    return winners;
+}
+
+vector<Team*> Scoreboard::getWomboComboAwardWinners()
+{
+    vector<Team*> qualifiers;
+    int target = 0, diff;
+    for (int i = 0; i < matchupCount; i++)
+    {
+        if (matchups[i]->hasAWinner())
+        {
+            diff = matchups[i]->getMatchupPointDiff();
+            if (diff > target)
+            {
+                target = diff;
+            }
+        }
+    }
+    womboComboAmount = target;
+    for (int i = 0; i < matchupCount; i++)
+    {
+        if (matchups[i]->hasAWinner())
+        {
+            diff = matchups[i]->getMatchupPointDiff();
+            if (diff == target)
+            {
+                qualifiers.push_back(matchups[i]->getWinner());
+            }
+        }
+    }
+    if (qualifiers.size() > 1)
+    {
+        return getTieBreaker(qualifiers);
+    }
+    else
+    {
+        return qualifiers;
+    }
+}
+
+vector<Team*> Scoreboard::getYoshiEggAwardWinners()
+{
+    vector<Team*> qualifiers;
+    vector<Team*> winners;
+    int target = 0, ye;
+    for (int i = 0; i < teamCount; i++)
+    {
+        if (teams[i]->qualifiesForPitchingAwards())
+        {
+            qualifiers.push_back(teams[i]);
+            ye = teams[i]->getYoshiEggs();
+            //cout << teams[i]->getOwnerName() << ", " << ye << endl;
+            if (ye > target)
+            {
+                target = ye;
+            }
+        }
+    }
+    for (int i = 0; i < qualifiers.size(); i++)
+    {
+        ye = qualifiers[i]->getYoshiEggs();
+        if (ye == target)
+        {
+            winners.push_back(qualifiers[i]);
+        }
+    }
+    return winners;
+}
+
+vector<Team*> Scoreboard::getYoureTooSlowAwardWinners()
+{
+    vector<Team*> winners;
+    int target = 0, ks;
+    for (int i = 0; i < teamCount; i++)
+    {
+        ks = teams[i]->getStrikeoutsBatters();
         if (ks > target)
         {
             target = ks;
@@ -322,7 +489,7 @@ vector<Team*> Scoreboard::getTargetSmasherWinners()
     }
     for (int i = 0; i < teamCount; i++)
     {
-        int ks = teams[i]->getStrikeoutsPitchers();
+        ks = teams[i]->getStrikeoutsBatters();
         if (ks == target)
         {
             winners.push_back(teams[i]);
@@ -334,11 +501,11 @@ vector<Team*> Scoreboard::getTargetSmasherWinners()
 vector<Team*> Scoreboard::getTieBreaker(vector<Team*>& qualifiers)
 {
     vector<Team*> winners;
-    int target = 0;
+    int target = 0, points;
     for (int i = 0; i < qualifiers.size(); i++)
     {
         //cout << qualifiers[i]->getOwnerName() << endl;
-        int points = qualifiers[i]->getTotalPoints();
+        points = qualifiers[i]->getTotalPoints();
         if (points > target)
         {
             target = points;
@@ -346,7 +513,7 @@ vector<Team*> Scoreboard::getTieBreaker(vector<Team*>& qualifiers)
     }
     for (int i = 0; i < qualifiers.size(); i++)
     {
-        int points = qualifiers[i]->getTotalPoints();
+        points = qualifiers[i]->getTotalPoints();
         if (points == target)
         {
             winners.push_back(qualifiers[i]);
