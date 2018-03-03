@@ -13,20 +13,23 @@
 
 using namespace std;
 
-int getWeek();
+int  getWeek();
 void fillScoreboard(Scoreboard* s, int week);
 void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, string days[], int numOfDays);
 void setBatters(Roster* rosterPtr, string fileLoc);
 void setPitchers(Roster* rosterPtr, string fileLoc);
 void setBench(Roster* rosterPtr, string fileLoc);
 void writeAwardToFile(Team* t, int week, string award);
+void displayAwards(Scoreboard* s);
+int  returnInteger(string data);
+
 void bowserPower(Scoreboard* s);
 void falconPawnch(Scoreboard* s);
 void gimp(Scoreboard*s);
 void homeRunBat(Scoreboard* s);
 void littleMacComeback(Scoreboard* s);
-void displayAwards(Scoreboard* s);
-int returnInteger(string data);
+void plankingLuigi(Scoreboard* s);
+void squeakyHammer(Scoreboard* s);
 
 int main()
 {
@@ -277,6 +280,37 @@ void writeAwardToFile(Team* t, int week, string award)
     outFile.close();
 }
 
+void displayAwards(Scoreboard* s)
+{
+    for (int i = 0; i < s->getTeamCount(); i++)
+    {
+        ofstream outFile;
+        outFile.open("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
+                     to_string(s->getWeek()) + "/awards_team" + to_string(s->getTeams()[i]->getTeamId()) + ".txt", ios::out);
+        outFile.close();
+    }
+    cout << "Awards for week " << s->getWeek() << endl;
+    bowserPower(s);
+    falconPawnch(s);
+    gimp(s);
+    homeRunBat(s);
+    littleMacComeback(s);
+    plankingLuigi(s);
+    squeakyHammer(s);
+}
+
+int returnInteger(string data)
+{
+    try
+    {
+        return stoi(data);
+    }
+    catch (invalid_argument)
+    {
+        return 0;
+    }
+}
+
 void bowserPower(Scoreboard* s)
 {
     vector<Team*> winners = s->getBowserPowerAwardWinners();
@@ -361,6 +395,23 @@ void homeRunBat(Scoreboard* s)
     }
 }
 
+void imReallyFeelingIt(Scoreboard* s)
+{
+    vector<Team*> winners = s->getImReallyFeelingItAwardWinners();
+    if (winners.size() == 0)
+    {
+        cout << "I'm Really Feeling It Award, no winners.\n";
+        return;
+    }
+    if (winners.size() == 1)
+    {
+        cout << "I'm Really Feeling It Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getHitByPitches() << " hit by pitches).\n";
+        string award = "I'm Really Feeling It Award (" + to_string(winners[0]->getHitByPitches()) + " hit by pitches)";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+}
+
 void littleMacComeback(Scoreboard* s)
 {
     vector<Team*> winners = s->getLittleMacComebackAwardWinners();
@@ -382,33 +433,45 @@ void littleMacComeback(Scoreboard* s)
     }
 }
 
-void displayAwards(Scoreboard* s)
+void plankingLuigi(Scoreboard* s)
 {
-    for (int i = 0; i < s->getTeamCount(); i++)
+    vector<Team*> winners = s->getPlankingLuigiAwardWinners();
+    if (winners.size() == 0)
     {
-        ofstream outFile;
-        outFile.open("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
-                     to_string(s->getWeek()) + "/awards_team" + to_string(s->getTeams()[i]->getTeamId()) + ".txt", ios::out);
-        outFile.close();
+        cout << "Planking Luigi Award, no winners.\n";
+        return;
     }
-    cout << "Awards for week " << s->getWeek() << endl;
-    bowserPower(s);
-    falconPawnch(s);
-    gimp(s);
-    homeRunBat(s);
-    littleMacComeback(s);
-    
+    if (winners.size() == 1)
+    {
+        cout << "Planking Luigi Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalPoints() << " points).\n";
+        string award = "Planking Luigi Award (" + to_string(winners[0]->getTotalPoints()) + " points)";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Planking Luigi Award, no winners, " << winners.size() << "-way tie.\n";
+    }
 }
 
-int returnInteger(string data)
+void squeakyHammer(Scoreboard* s)
 {
-    try
+    vector<Team*> winners = s->getSqueakyHammerAwardWinners();
+    if (winners.size() == 0)
     {
-        return stoi(data);
+        cout << "Squeaky Hammer Award, no winners.\n";
+        return;
     }
-    catch (invalid_argument)
+    if (winners.size() == 1)
     {
-        return 0;
+        cout << "Squeaky Hammer Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalPoints() << " points).\n";
+        string award = "Squeaky Hammer Award (" + to_string(winners[0]->getTotalPoints()) + " points)";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Squeaky Hammer Award, no winners, " << winners.size() << "-way tie.\n";
     }
 }
 
