@@ -48,13 +48,20 @@ public:
     
     vector<Team*> getImReallyFeelingItAwardWinners();   // team with most hit batters, no award if 2 or more teams tie
     
-    vector<Team*> getTargetSmasherWinners();            // team with most strikeouts by pitcher, no award if 2 ore more teams tie
-    
     vector<Team*> getLittleMacComebackAwardWinners();   // team with largest comeback, compare point differentials throughout the week
                                                         // winning team with largest defecit overcome wins award
     
+    vector<Team*> getPlankingLuigiAwardWinners();       // team with 0 roster moves/changes and still wins, tie breaker goes to team
+                                                        // with most points
+    
+    vector<Team*> getSqueakyHammerAwardWinners();       // team with fewest points scored, tie breaker goes to team with the most batting
+                                                        // strikeouts
+    
+    vector<Team*> getTargetSmasherWinners();            // team with most strikeouts by pitcher, no award if 2 ore more teams tie
+    
     vector<Team*> getDaybreakWinners();                 // team with the most pitching strikeouts, most quality starts, and least earned runs
                                                         // no award if 2 or more teams tie (in all three categories), a team can still win if they're tied in one or two of the categories, however
+    vector<Team*> getTieBreaker(vector<Team*>& qualifiers);
     
 };
 
