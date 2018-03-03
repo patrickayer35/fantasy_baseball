@@ -8,6 +8,7 @@
 
 #include "inningsConversions.h"
 #include "Team.h"
+#include <cmath>
 #include <iomanip>
 #include <iostream>
 
@@ -219,7 +220,8 @@ void Team::setYoshiEggs()
 
 void Team::setTempleRatio()
 {
-    templeRatio = (double) earnedRuns / (hits + walksPitchers + hitBatters);
+    double val = (double) earnedRuns / (hits + walksPitchers + hitBatters);
+    templeRatio = round(val * 1000.0) / 1000.0;
 }
 
 void Team::setTotalPoints()
@@ -528,8 +530,8 @@ void Team::pitchingLimitAdjustments()
             int count = rosters[i]->getPitcherCount();
             cout << left << setw(4) << "#";
             cout << left << setw(20) << "Name";
-            cout << left << setw(6) << "Outs";
-            cout << left << setw(20) << "Quality starts";
+            cout << left << setw(7) << "Outs";
+            cout << left << setw(7) << "QS";
             cout << left << setw(7) << "Saves";
             cout << left << setw(7) << "Holds";
             cout << left << setw(7) << "Points"; cout << "\n";
@@ -539,8 +541,8 @@ void Team::pitchingLimitAdjustments()
             {
                 cout << (j + 1) << left << setw(3) << ".";
                 cout << left << setw(20) << pitchers[j]->playerName;;
-                cout << left << setw(6) << pitchers[j]->stats[0];
-                cout << left << setw(20) << pitchers[j]->stats[6];
+                cout << left << setw(7) << pitchers[j]->stats[0];
+                cout << left << setw(7) << pitchers[j]->stats[6];
                 cout << left << setw(7) << pitchers[j]->stats[9];
                 cout << left << setw(7) << pitchers[j]->stats[10];
                 cout << left << setw(7) << pitchers[j]->stats[11] << "\n";
