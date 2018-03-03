@@ -20,7 +20,8 @@ private:
     Team winningTeam;   Team* winnerPtr;
     Team losingTeam;    Team* loserPtr;
     bool    winner;
-    int     largestPointDiff;
+    int     largestPointDiff;   // largest point differential on a given day of the matchup week
+    int     matchupPointDiff;   // difference in points between away and home team
     string  matchupStr;
     
 public:
@@ -39,6 +40,9 @@ public:
     string  getMatchupString();
     bool    hasAWinner();
     int     getLargestPointDiff();
+    int     getMatchupPointDiff();
+    
+    void displayPointDifferentials();
     
 };
 

@@ -7,6 +7,7 @@
 //
 
 #include "Matchup.h"
+#include <iostream>
 
 Matchup::Matchup()
 {
@@ -16,6 +17,7 @@ Matchup::Matchup()
     loserPtr = nullptr;
     winner = true;
     largestPointDiff = 0;
+    matchupPointDiff = 0;
     matchupStr = "";
 }
 
@@ -34,7 +36,7 @@ void Matchup::setWinnersAndLosers()
         awayTeamPtr->setWinner(true);
         loserPtr = homeTeamPtr;
         homeTeamPtr->setWinner(false);
-        //matchupDiff = awayTeamPtr->getTotalPoints() - homeTeamPtr->getTotalPoints();
+        matchupPointDiff = awayTeamPtr->getTotalPoints() - homeTeamPtr->getTotalPoints();
     }
     else if (homeTeamPtr->getTotalPoints() > awayTeamPtr->getTotalPoints())
     {
@@ -42,7 +44,7 @@ void Matchup::setWinnersAndLosers()
         homeTeamPtr->setWinner(true);
         loserPtr = awayTeamPtr;
         awayTeamPtr->setWinner(false);
-        //matchupDiff = homeTeamPtr->getTotalPoints() - awayTeamPtr->getTotalPoints();
+        matchupPointDiff = homeTeamPtr->getTotalPoints() - awayTeamPtr->getTotalPoints();
     }
     else
     {
@@ -52,29 +54,20 @@ void Matchup::setWinnersAndLosers()
 
 void Matchup::setLargestPointDiff()
 {
-    int largest = 0;
     int diff = 0;
     int days = awayTeamPtr->getRosterCount();
     if (winner)
     {
+        int winnerTotal = 0, loserTotal = 0;
         for (int i = 0; i < days; i++)
         {
-            diff = loserPtr->getRosterData()[i]->getTotalPoints() - winnerPtr->getRosterData()[i]->getTotalPoints();
-        }
-        if (diff > largest)
-        {
-            largestPointDiff = diff;
-        }
-    }
-    else
-    {
-        for (int i = 0; i < days; i++)
-        {
-            diff = awayTeamPtr->getRosterData()[i]->getTotalPoints() - homeTeamPtr->getRosterData()[i]->getTotalPoints();
-        }
-        if (diff > largest)
-        {
-            largestPointDiff = diff;
+            winnerTotal += winnerPtr->getRosterData()[i]->getTotalPoints();
+            loserTotal  += loserPtr->getRosterData()[i]->getTotalPoints();
+            diff = loserTotal - winnerTotal;
+            if (diff > largestPointDiff)
+            {
+                largestPointDiff = diff;
+            }
         }
     }
 }
@@ -114,6 +107,26 @@ int Matchup::getLargestPointDiff()
     return largestPointDiff;
 }
 
+int Matchup::getMatchupPointDiff()
+{
+    return matchupPointDiff;
+}
+
+void Matchup::displayPointDifferentials()
+{
+    int days = winnerPtr->getRosterData().size();
+    int winnerTotal = 0, loserTotal = 0;
+    for (int i = 0; i < days; i++)
+    {
+        winnerTotal += winnerPtr->getRosterData()[i]->getTotalPoints();
+        loserTotal  += loserPtr->getRosterData()[i]->getTotalPoints();
+        cout << "\n" << winnerPtr->getTeamName() << ", " << loserPtr->getTeamName() << endl;
+        cout << winnerPtr->getRosterData()[i]->getDate();
+        cout << ", " << winnerTotal;
+        cout << ", " << loserTotal;
+        cout << ", " << winnerTotal - loserTotal << endl;
+    }
+}
 
 
 
