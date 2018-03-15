@@ -18,10 +18,10 @@ Awarded to the team that hits the most homeRuns. The home-run bat is a commmon S
 Awarded to the team with the most hitByPitches. The award is a reference to Shulk's side taunt.
 
 *Little Mac Comeback Award*
-Awarded to a winning team that had the largest comeback. Tie breakers go to the team with more totalPoints. The comebacks are determined by adding up the total points scored by either teams through each day of the week, all while keeping track of the total point differential between them. The winner of the award is the team that, at any point in the week, was losing by the largest deficit. The award is named so due to Little Mac's potential to quickly swing a match in his favor, and because it rhymes and sounds cool.
+Awarded to a winning team that had the largest comeback. Tie breakers go to the team with more totalPoints. The comebacks are determined by adding up the total points scored by either team through each day of the week, all while keeping track of the total point differential between them. The winner of the award is the team that, at any point in the week, was losing by the largest deficit. The award is named so due to Little Mac's potential to quickly swing a match in his favor, and because it rhymes and sounds cool.
 
 --*Planking Luigi Award*
-Awarded to the team that won but didn't do anything. Tie breakers go to the team with the more totalPoints. Not doing anything is defined as making no roster moves throughout the week nor acquiring any players. The award is a reference to the many YouTube videos of Luigi winning a match by doing nothing (for example, see https://www.youtube.com/watch?v=SFBnhaXql24&t=398s). It is also a reference to Luigi's side taunt, where he planks.
+Awarded to the team that won but didn't do anything. Tie breakers go to the team with the more totalPoints. Not doing anything is defined as making no roster moves throughout the week, nor acquiring any players. The award is a reference to the many YouTube videos of Luigi winning a match by doing nothing (for example, see https://www.youtube.com/watch?v=SFBnhaXql24&t=398s). It is also a reference to Luigi's side taunt, where he planks.
 
 --*Golden Squeaky Hammer Award*
 Awarded to the team that scored the fewest totalPoints. Tie breakers go to the team with more strikeoutsBatters. It is a reference to the Golden Hammer item occasionally being a dud.
