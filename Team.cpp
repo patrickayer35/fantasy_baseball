@@ -239,7 +239,14 @@ void Team::setLuigi()
             return;
         }
     }
-    luigi = true;
+    if (acquisitions > 0)
+    {
+        luigi = false;
+    }
+    else
+    {
+        luigi = true;
+    }
 }
 
 void Team::setOverPitchingLimit()
