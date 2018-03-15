@@ -1,14 +1,169 @@
 CODEBOOK
 
-###### team data ######
-team name: 			teamName, 			string, 	stores the team name
-owner name: 		ownerName, 			string, 	stores the team's owner
-team id:			teamId,				integer,	stores each team's unique identification number (a number 1 through 12)
-wins: 				wins, 				integer, 	stores the team's wins
-losses: 			losses, 			integer, 	stores the team's losses
-ties: 				ties, 				integer, 	stores the team's ties
-streak: 			streak, 			string, 	stores the team's streak in the format "most recent win/loss/tie" + "streak of win/loss/tie"
-pitchers started: 	pitchersStarted, 	integer, 	stores the number of starting pitchers a team used for the week
-pitching limit: 	pitchingLimit, 		integer, 	stores the max number of starting pitchers a team is allowed
-acquisitions: 		acquisitions, 		integer, 	number of players a team acquired during the week
-acquisitions limit: acquisitionsLimit, 	integer, 	number of players a team is allowed to acquire during a week
+**********************************
+as defined in Roster.h ***********
+**********************************
+
+==========Batter data (stored in a struct)==========
+playerName,			string,			batter's name
+slot,				string,			batter's slot on roster (C, 1B, 2B, 3B, 2B/SS, 1B/3B, OF, UTIL)
+teamName,			string,			batter's actual team (in real life)
+stats,				int array,		batter's statistics for a day
+									[ Runs, Singles, Doubles, ... Errors, Outfield Assists, Total ]
+
+==========Pitcher data (stored in a struct)==========
+playerName,			string,			pitcher's name
+slot,				string,			pitcher's slot on roster (RP, SP)
+teamName,			string,			pitcher's actual team (in real life)
+innings,			double,			pitcher's innings pitched for a day
+stats,				int array,		pitcher's statistics for a day (stats[0] stores total outs pitched)
+									[ Outs pitched, Hits, Earned runs, ... Saves, Holds, Total ]
+
+==========BenchPlayer data (stored in a struct)==========
+playerName,			string,			player's name
+slot,				string,			player's slot on roster (either BENCH or DL)
+teamName,			string,			player's actual team (in real life)
+
+==========Roster object==========
+The Roster class holds data for one day
+
+date,			string,					date for the roster
+batters,		vector<Batter*>			a vector storing a list of pointers to all active batters for that day
+pitchers,		vector<Pitcher*>		a vector storing a list of pointers to all active pitchers for that day
+bench,			vector<BenchPlayer*>	a vector storing a list of pointers to all active bench players for that day
+
+batterCount,	int,					total number of batters for that day
+pitcherCount,	int,					total number of pitchers for that day
+benchCount,		int,					total number of bench players for that day
+rosterCount,	int,					total number of players (batterCount + pitcherCount + benchCount)
+
+
+********************************
+as defined in Team.h ***********
+********************************
+
+The Team class holds all the weekly data for a select team. Below are the data members:
+
+teamName,			string,			team's name
+ownerName,			string,			owner's name
+teamId,				int,			unique identifer ESPN assigns to each team
+wins,				int,			team's total wins for the season
+losses,				int,			team's total losses for the season
+ties,				int,			team's total ties for the season
+streak,				string,			team's winning/losing streak (such as W5 for 5-game win streak or L3 for 3-game lose streak)
+pitchersStarted,	int,			number of pitcher's the team started throughout the week
+pitchingLimit,		int,			the weekly cap on pitchers a team is allowed to start (usually 1 per day or 7 per week)
+acquisitions,		int,			number of acquisitions a team made for the week
+acqusitionsLimit,	int,			weekly cap on acquisitions a team is allowed for the week (usually 1 per day or 7 per week)
+winner,				bool,			true if this team one their matchup, false otherwise
+luigi,				bool,			true if this team made no roster changes throughout the week, false otherwise, see awards_list.txt for more information
+overPitchingLimit,	bool,			true if pitchersStarted is greater than pitchingLimit, false otherwise
+pitchingQualify,	bool,			true if pitchersStarted >= pitchingLimit, false otherwise, this member is for determining if the team is elligible for pitching awards, see awards_list.txt for more information
+
+==========batting categories==========
+runs,				int,			total runs scored
+singles,			int,			total singles hit
+doubles,			int,			total doubles hit
+triples,			int,			total triples hit
+homeRuns,			int,			total home runs hit
+walksBatters,		int,			total walks via batter
+strikeoutsBatters,	int,			total strikeouts via batter
+hitByPitches,		int,			total hit by pitches
+stolenBases,		int,			total bases stolen
+caughtStealing,		int,			total times a batter was caught stealing a base
+cycles,				int,			total cycles recorded
+outfieldAssists,	int,			total outfield assists
+errors,				int,			total errors
+battingPoints,		int,			total combined points scored by batters
+
+==========pitching categories==========
+inningsPitched,		double,			total innings recorded by pitchers
+hits,				int,			total hits allowed
+earnedRuns,			int,			total earned runs allowed
+walksPitchers,		int,			total walks allowed
+hitBatters,			int,			total hit batters
+strikeoutsPitchers,	int,			total strikeouts recorded
+qualityStarts,		int,			total quality starts earned
+noHitters,			int,			total no hitters recorded
+perfectGames,		int,			total perfect games recorded
+saves,				int,			total saves recorded
+holds,				int,			total holds recorded
+pitchingPoints,		int,			total combined points scored by pitchers
+
+==========derived categories==========
+totalBases,			int,			total bases acquired by hitters, calculated as singles + doubles*2 + triples*3 + homeRuns*4 + stolenBases + hitByPitches
+outs,				int,			total outs recorded by pitchers
+yoshiEggs,			int,			saves + holds, see awards_list.txt for more information
+templeRatio,		double,			ratio of earned runs allowed to total baserunners allowed, calculated as earnedRuns / (hits + hitBatters + walksPitchers), see awards_list.txt for more information
+totalPoints,		int,			total points scored between batters and pitchers, calculated as battingPoints + pitchingPoints
+
+==========other==========
+dailyRosters,		vector<Roster*>,	a vector containing pointers to Roster objects (see above), accounts for a team's daily stats throughout the week
+rosterCount,		int,				total number of rosters (equal to the length of dailyRosters)
+
+
+***********************************
+as defined in Matchup.h ***********
+***********************************
+
+The Matchup class holds data for a single matchup
+
+awayTeam,			Team instance,		Team instance storing data for the away team in the matchup
+awayTeamPtr,		Team*,				pointer to awayTeam object
+homeTeam,			Team instance,		Team instance storing data for the home team in the matchup
+homeTeamPtr,		Team*,				pointer to homeTeam object
+
+winningTeam,		Team instance,		Team that won the matchup
+winnerPtr,			Team*,				pointer to Team object that won the matchup
+losingTeam,			Team instance,		Team that lost the matchup
+loserPtr,			Team*,				pointer to Team object that lost the matchup
+
+winner,				bool,				true if there is a winner of the matchup, false otherwise
+largestPointDiff,	int,				largest point differential on a given day during the matchup week
+matchupPointDiff,	int,				difference in points between winning team and losing team
+matchupStr,			string,				unique string identifier for the matchup (ex. Matchup1vs2, meaning team 1 versus team 2)
+
+***********************************
+as defined in Scoreboard.h ********
+***********************************
+
+The Scoreboard class holds data for a single week
+
+week,					int,				the week number
+matchupCount,			int,				number of matchups in the week (should be constant throughout the season)
+teamCount,				int,				number of teams in the week (should be constant throughout the season)
+gimpAmount,				int,				the amount of points the winner of the Gimp Award beat their opponent by, see awards_list.txt for more information
+littleMacComebackAmount,int,				the deficit the winner of the Little Mac Comeback Award overcame to win their matchup, see awards_list.txt for more information
+womboComboAmount,		int,				the amount of points the winner of the Wombo Combo Award beat their opponent by, see awards_list.txt for more information
+matchups,				vector<Matchup*>	a vector containing pointers to the six different Matchup objects (see above) for the week
+teams,					vector<Team*>		a vector containing pointers to the 12 different Team objects (see above) in the league
+
+==========leader members==========
+The leader members are int arrays that keep track of the league leaders in particular categories, these are important for calculating the triple crown winners, see awards_list.txt for more information
+
+totalBasesLeaders,		int[]				an array of ints that stores the teamIds of any team that led the league in totalBases; all teams that tied in the category are added to the array
+homeRunsLeaders,		int[]				an array of ints that stores the teamIds of any team that led the league in homeRuns; all teams that tied in the category are added to the array
+runsBattedInLeaders,	int[]				an array of ints that stores the teamIds of any team that led the league in runsBattedIn; all teams that tied in the category are added to the array
+earnedRunsLeaders,		int[]				an array of ints that stores the teamIds of any team that led the league in earnedRuns; all teams that tied in the category are added to the array
+qualityStartsLeaders,	int[]				an array of ints that stores the teamIds of any team that led the league in qualityStarts; all teams that tied in the category are added to the array
+strikeoutsLeaders,		int[]				an array of ints that stores the teamIds of any team that led the league in strikeoutsPitchers; all teams that tied in the category are added to the array
+
+totalBasesLeadersSize,		int,			number of teamIds added to totalBasesLeaders array
+homeRunsLeadersSize,		int,			number of teamIds added to homeRunsLeaders array
+runsBattedInLeadersSize,	int,			number of teamIds added to runsBattedInLeaders array
+earnedRunsLeadersSize,		int,			number of teamIds added to earnedRunsLeaders array
+qualityStartsLeadersSize,	int,			number of teamIds added to qualityStartsLeaders array
+strikeoutsLeadersSize,		int,			number of teamIds added to strikeoutsLeaders array
+
+
+
+
+
+
+
+
+
+
+
+
+

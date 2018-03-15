@@ -1,0 +1,53 @@
+Below is a list of the available awards teams can earn throughout the week. Awards marked with a (++) are new awards for this season. Awards marked with a (--) are renamed from the previous season. Awards marked with (^^) are pitching awards, meaning a team must first be elligible in order to win. To determine elligibility, a team's pitchingQualify data member must be TRUE. The league allows only a certain number of pitching starts per week for each team (to prevent teams from streaming pitchers and racking up points). However, teams who don't meet the pitching limit aren't elligible for pitching awards. All awards are references to the Super Smash Brothers video game series.
+
+AWARDS
+===========
+*Bowser Power Award*
+Awarded to the team with the most totalBases. A team's totalBases is calculated with the formula singles + 2*doubles + 3*triples + 4*homeRuns + stolenBases + hitByPitches. The award is a measure of offensive power, as well as a reference to Bowser's incredibly powerful skillset. It also rhymes and sounds cool.
+
+*Falcon PAWNCH Award*
+Awarded to the team with the most totalPoints. Although Captain Falcon's neutral B attack isn't the strongest, it looks cool, still causes significant knockback, and is easily one of the most satisfying moves in the game to use against an opponent.
+
+*Gimp Award*
+Awarded to the team that won by the smallest point differential. It is a reference to a gimp, which is defined on SmashWiki as "the action of KOing a recovering opponent by interrupting their recovery, often with a rather weak attack that would not KO the opponent otherwise."
+
+*Home-Run Bat Award*
+Awarded to the team that hits the most homeRuns. The home-run bat is a commmon Super Smash Brothers item.
+
+++*I'm Really Feeling It Award*
+Awarded to the team with the most hitByPitches. The award is a reference to Shulk's side taunt.
+
+^^/++*Target Smasher Award*
+Awarded to the team with the most strikeoutsPitchers (pitching strikeouts). The award is a reference to the mini-game Target Smasher!!, as well as a reference to pitchers hitting their targets.
+
+*Little Mac Comeback Award*
+Awarded to a winning team that had the largest comeback. Tie breakers go to the team with more totalPoints. The comebacks are determined by adding up the total points scored by either teams through each day of the week, all while keeping track of the total point differential between them. The winner of the award is the team that, at any point in the week, was losing by the largest deficit. The award is named so due to Little Mac's potential to quickly swing a match in his favor, and because it rhymes and sounds cool.
+
+--*Planking Luigi Award*
+Awarded to the team that won but didn't do anything. Tie breakers go to the team with the more totalPoints. Not doing anything is defined as making no roster moves throughout the week nor acquiring any players. The award is a reference to the many YouTube videos of Luigi winning a match by doing nothing (for example, see https://www.youtube.com/watch?v=SFBnhaXql24&t=398s). It is also a reference to Luigi's side taunt, where he planks.
+
+--*Golden Squeaky Hammer Award*
+Awarded to the team that scored the fewest totalPoints. Tie breakers go to the team with more strikeoutsBatters. It is a reference to the Golden Hammer item occasionally being a dud.
+
+*Super Sonic Award*
+Awarded to the team with the most stolenBases. It is a reference to Sonic's Final Smash, a transformation Sonic takes after acquiring all 7 Chaos Emeralds in various Sonic the Hedgehog games.
+
+^^/++*Temple Basement Survivor*
+Awarded to the team with the smallest ratio of earned runs allowed to baserunners allowed. It is calculated with the formula earnedRuns / (hits + walksPitchers + hitBatters). The award name is a reference to how Smash players can rack up massive damage in the basement on Hyrule Temple without being KO'd. So teams whose pitchers allow many baserunners, but only a few to score, earn this award.
+
+*Wombo Combo Award*
+Awarded to the team that won by the largest point differential. Tie breakers go to the team with more totalPoints. The award is a reference to the famous Smash video: https://www.youtube.com/watch?v=pD_imYhNoQ4.
+
+^^/++*Yoshi Egg Award*
+Awarded to the team with the most combined saves plus holds. It is meant to award a team's relievers, and it is calculated with the formula saves + holds. The award is a pun, based off the unofficial sabermetric statistic "Goose Egg", which was coined by Nate Silver in reference to the Hall of Famer, Goose Gossage. A goose egg is used to value relief pitchers. See here for more information: https://fivethirtyeight.com/features/goose-egg-new-save-stat-relief-pitchers/.
+
+*You're Too Slow Award*
+Awarded to the team with the most strikeoutsBatters (batting strikeouts). The award is a reference to Sonic's side taunt.
+
+TRIPLE CROWN AWARDS
+======================
+^^*Daybreak Award*
+Awarded to the team with the fewest earnedRuns, most strikeoutsPitchers, and most qualityStarts. If a team is first in all three of these categories, they get this award. If they tie in one of these categories, but are first in the others, then they are still awarded. The award is a reference to the Daybreak item in Smash 4, which exists in three distinct pieces. If a player has all three pieces, they can use the item.
+
+*Dragoon Award*
+Awarded to the team with the most totalBases, most homeRuns, and most runsBattedIn. If a team is first in all three of these categories, they get this award. If they tie in one of these categories, but are first in the others, then they are still awarded. The award is a reference to the Dragoon item in Smash 4 and Brawl, which exists in three distinct pieces. If a player has all three pieces, they can use the item.

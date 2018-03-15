@@ -1,0 +1,13 @@
+PROJECT DESCRIPTION
+==========================
+I run a fantasy baseball league (head to head, points) where teams are awarded every week for various accomplishments (To see what the awards are, see awards_list.txt). I got tired of calculating the awards out manually week to week, so I coded this project with the intention of automating the process. It involves two parts.
+
+PART 1
+==========================
+Collecting the data is the first part. I wrote a python script (see main.py) that extracts the relevant data from our fantasy league. The script only collects data for a given week, so running main.py first prompts the user with inputting a week to collect. If the user inputs the integer "5" when prompted, the script will then scrape data from week 5 only. The data is stored locally, week to week, on my machine.
+
+PART 2
+==========================
+The second part involves reading in the data from part 1 and calculating the awards. This is all done with C++. The files are main.cpp, Scoreboard.h, Scoreboard.cpp, Matchup.h, Matchup.cpp, Team.h, Team.cpp, Roster.h, Roster.cpp, inningsConversions.h, and inningsConversions.cpp. This C++ program, like the python script in part 1, only does one thing, which is calculate the awards. Like main.py, running main.cpp will first prompt the user to input a week to analyze. The program then reads in all the data from that week, stores it in a data structure, and then calculates and prints out the awards. 
+
+The data is stored in one large object, the Scoreboard, which is an instance of the Scoreboard class (defined in Scoreboard.h and Scoreboard.cpp). The Scoreboard contains all the data for the six Matchups during a given week, where each Matchup is an instance of the Matchup class (defined in Matchup.h and Matchup.cpp). Each Matchup contains two instances of the Team class (defined in Team.h and Team.cpp), which each represent an away team and a home team. Because games happen everyday in fantasy baseball, a team's roster is constantly changing and earning points. So, each Team object holds several instances of the Roster class (defined in Roster.h and Roster.cpp), which each hold data for a particular day. For example, a given week is 7 days long, so each Team will have Rosters for each of those seven days. The data acquired for a Monday will be different from the data acquired on a Tuesday, and so on. To see a detailed list of data members for a class, refer to the codebook.txt file, or to the actual header file for the class.
