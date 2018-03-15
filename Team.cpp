@@ -79,9 +79,35 @@ void Team::setTeamName(string n)
     teamName = n;
 }
 
-void Team::setOwnerName(string o)
+void Team::setOwnerName()
 {
-    ownerName = o;
+    switch(teamId)
+    {
+        case 1: ownerName = "Patrick Ayer";
+            break;
+        case 2: ownerName = "Craig Wise";
+            break;
+        case 3: ownerName = "Ryan Daley";
+            break;
+        case 4: ownerName = "Nic Hay";
+            break;
+        case 5: ownerName = "Rory Lynch";
+            break;
+        case 6: ownerName = "Ricardo Martinez";
+            break;
+        case 7: ownerName = "Eric Wang";
+            break;
+        case 8: ownerName = "Ben Chance";
+            break;
+        case 9: ownerName = "Will Smith";
+            break;
+        case 10: ownerName = "Will Cherry";
+            break;
+        case 11: ownerName = "Sean Phillips";
+            break;
+        case 12: ownerName = "Sandy Kishida";
+            break;
+    }
 }
 
 void Team::setTeamId(int i)

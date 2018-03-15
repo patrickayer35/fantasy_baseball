@@ -36,6 +36,8 @@ void templeBasementSurvivor(Scoreboard* s);
 void womboCombo(Scoreboard* s);
 void yoshiEgg(Scoreboard* s);
 void youreTooSlow(Scoreboard* s);
+void daybreak(Scoreboard* s);
+void dragoon(Scoreboard* s);
 
 int main()
 {
@@ -158,7 +160,7 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
     getline(teamFile, strData); teamPtr->setTeamName(strData);
     teamFile >> intData;        teamPtr->setTeamId(intData);
     teamFile.ignore();
-    getline(teamFile, strData); teamPtr->setOwnerName(strData);
+    getline(teamFile, strData); teamPtr->setOwnerName();
     teamFile >> intData;        teamPtr->setWins(intData);
     teamFile >> intData;        teamPtr->setLosses(intData);
     teamFile >> intData;        teamPtr->setTies(intData);
@@ -309,6 +311,15 @@ void displayAwards(Scoreboard* s)
     womboCombo(s);
     yoshiEgg(s);
     youreTooSlow(s);
+    
+    s->setRunsBattedInLeaders();
+    s->setEarnedRunsLeaders();
+    s->setQualityStartsLeaders();
+    
+    daybreak(s);
+    dragoon(s);
+    
+    //s->displayLeaders();
 }
 
 int returnInteger(string data)
@@ -334,7 +345,7 @@ void bowserPower(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Bowser Power Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalBases() << " bases).\n";
-        string award = "Bowser Power Award (" + to_string(winners[0]->getTotalBases()) + " bases)";
+        string award = "Bowser Power Award (" + to_string(winners[0]->getTotalBases()) + " bases)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -355,7 +366,7 @@ void falconPawnch(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Falcon PAWNCH Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalPoints() << " points).\n";
-        string award = "Falcon PAWNCH Award (" + to_string(winners[0]->getTotalPoints()) + " points)";
+        string award = "Falcon PAWNCH Award (" + to_string(winners[0]->getTotalPoints()) + " points)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -376,7 +387,7 @@ void gimp(Scoreboard*s)
     if (winners.size() == 1)
     {
         cout << "Gimp Award, " << winners[0]->getOwnerName() << " (" << s->getGimpAmount() << " points).\n";
-        string award = "Gimp Award (" + to_string(s->getGimpAmount()) + " points)";
+        string award = "Gimp Award (" + to_string(s->getGimpAmount()) + " points)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -397,7 +408,7 @@ void homeRunBat(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Home Run Bat Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getHomeRuns() << " home runs).\n";
-        string award = "Home Run Bat Award (" + to_string(winners[0]->getHomeRuns()) + " home runs)";
+        string award = "Home Run Bat Award (" + to_string(winners[0]->getHomeRuns()) + " home runs)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -418,7 +429,7 @@ void imReallyFeelingIt(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "I'm Really Feeling It Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getHitByPitches() << " hit by pitches).\n";
-        string award = "I'm Really Feeling It Award (" + to_string(winners[0]->getHitByPitches()) + " hit by pitches)";
+        string award = "I'm Really Feeling It Award (" + to_string(winners[0]->getHitByPitches()) + " hit by pitches)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -435,7 +446,7 @@ void littleMacComeback(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Little Mac Comeback Award, " << winners[0]->getOwnerName() << " (overcoming " << s->getLittleMacComebackAmount() << "-point deficit).\n";
-        string award = "Little Mac Comeback Award (overcoming " + to_string(s->getLittleMacComebackAmount()) + "-point deficit)";
+        string award = "Little Mac Comeback Award (overcoming " + to_string(s->getLittleMacComebackAmount()) + "-point deficit)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -456,7 +467,7 @@ void plankingLuigi(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Planking Luigi Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalPoints() << " points).\n";
-        string award = "Planking Luigi Award (" + to_string(winners[0]->getTotalPoints()) + " points)";
+        string award = "Planking Luigi Award (" + to_string(winners[0]->getTotalPoints()) + " points)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -477,7 +488,7 @@ void squeakyHammer(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Squeaky Hammer Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTotalPoints() << " points).\n";
-        string award = "Squeaky Hammer Award (" + to_string(winners[0]->getTotalPoints()) + " points)";
+        string award = "Squeaky Hammer Award (" + to_string(winners[0]->getTotalPoints()) + " points)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -498,7 +509,7 @@ void superSonic(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Super Sonic Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getStolenBases() << " stolen bases).\n";
-        string award = "Super Sonic Award (" + to_string(winners[0]->getStolenBases()) + " stolen bases)";
+        string award = "Super Sonic Award (" + to_string(winners[0]->getStolenBases()) + " stolen bases)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -519,7 +530,7 @@ void targetSmasher(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Target Smasher Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getStrikeoutsPitchers() << " strikeouts).\n";
-        string award = "Target Smasher Award (" + to_string(winners[0]->getStrikeoutsPitchers()) + " strikeouts)";
+        string award = "Target Smasher Award (" + to_string(winners[0]->getStrikeoutsPitchers()) + " strikeouts)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -540,7 +551,7 @@ void templeBasementSurvivor(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Temple Basement Survivor Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getTempleRatio() << ", ratio of earned runs allowed to baserunners allowed).\n";
-        string award = "Temple Basement Survivor Award (" + to_string(winners[0]->getStrikeoutsPitchers()) + ", ratio of earned runs allowed to baserunners allowed)";
+        string award = "Temple Basement Survivor Award (" + to_string(winners[0]->getStrikeoutsPitchers()) + ", ratio of earned runs allowed to baserunners allowed)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -561,7 +572,7 @@ void womboCombo(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Wombo Combo Award, " << winners[0]->getOwnerName() << " (" << s->getWomboComboAmount() << " points).\n";
-        string award = "Wombo Combo Award (" + to_string(s->getWomboComboAmount()) + " points)";
+        string award = "Wombo Combo Award (" + to_string(s->getWomboComboAmount()) + " points)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -582,7 +593,7 @@ void yoshiEgg(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "Yoshi Egg Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getYoshiEggs() << " saves + holds).\n";
-        string award = "Yoshi Egg Award (" + to_string(winners[0]->getYoshiEggs()) + " saves + holds)";
+        string award = "Yoshi Egg Award (" + to_string(winners[0]->getYoshiEggs()) + " saves + holds)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -603,7 +614,7 @@ void youreTooSlow(Scoreboard* s)
     if (winners.size() == 1)
     {
         cout << "You're Too Slow Award, " << winners[0]->getOwnerName() << " (" << winners[0]->getStrikeoutsBatters() << " strikeouts).\n";
-        string award = "You're Too Slow Award (" + to_string(winners[0]->getStrikeoutsBatters()) + " strikeouts)";
+        string award = "You're Too Slow Award (" + to_string(winners[0]->getStrikeoutsBatters()) + " strikeouts)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
     }
@@ -613,7 +624,59 @@ void youreTooSlow(Scoreboard* s)
     }
 }
 
+void daybreak(Scoreboard* s)
+{
+    vector<Team*> winners = s->getDaybreakAwardWinners();
+    if (winners.size() == 0)
+    {
+        cout << "Daybreak Award, no winners.\n";
+        return;
+    }
+    if (winners.size() == 1)
+    {
+        cout << "Daybreak Award, " << winners[0]->getOwnerName()
+        << " (" << winners[0]->getEarnedRuns() << " earned runs, "
+        << winners[0]->getQualityStarts() << " quality starts, "
+        << winners[0]->getStrikeoutsPitchers() << " strikeouts).\n";
+        
+        string award = "Daybreak Award (" + to_string(winners[0]->getEarnedRuns()) + " earned runs, "
+        + to_string(winners[0]->getQualityStarts()) + " quality starts, "
+        + to_string(winners[0]->getStrikeoutsPitchers()) + " strikeouts)\n";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Daybreak Award, no winners, " << winners.size() << "-way tie.\n";
+    }
+}
 
+void dragoon(Scoreboard* s)
+{
+    vector<Team*> winners = s->getDragoonAwardWinners();
+    if (winners.size() == 0)
+    {
+        cout << "Dragoon Award, no winners.\n";
+        return;
+    }
+    if (winners.size() == 1)
+    {
+        cout << "Dragoon Award, " << winners[0]->getOwnerName()
+             << " (" << winners[0]->getTotalBases() << " total bases, "
+             << winners[0]->getHomeRuns() << " home runs, "
+             << winners[0]->getRunsBattedIn() << " runs batted in).\n";
+        
+        string award = "Dragoon Award (" + to_string(winners[0]->getTotalBases()) + " total bases, "
+                     + to_string(winners[0]->getHomeRuns()) + " home runs, "
+                     + to_string(winners[0]->getRunsBattedIn()) + " runs batted in)\n";
+        writeAwardToFile(winners[0], s->getWeek(), award);
+        return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "Dragoon Award, no winners, " << winners.size() << "-way tie.\n";
+    }
+}
 
 
 

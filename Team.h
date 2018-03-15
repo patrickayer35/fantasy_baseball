@@ -78,7 +78,7 @@ public:
     ~Team();
     
     void setTeamName(string n);
-    void setOwnerName(string o);
+    void setOwnerName();
     void setTeamId(int i);
     void setWins(int w);
     void setLosses(int l);
