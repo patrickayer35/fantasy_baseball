@@ -17,9 +17,6 @@ Awarded to the team that hits the most homeRuns. The home-run bat is a commmon S
 ++*I'm Really Feeling It Award*
 Awarded to the team with the most hitByPitches. The award is a reference to Shulk's side taunt.
 
-^^/++*Target Smasher Award*
-Awarded to the team with the most strikeoutsPitchers (pitching strikeouts). The award is a reference to the mini-game Target Smasher!!, as well as a reference to pitchers hitting their targets.
-
 *Little Mac Comeback Award*
 Awarded to a winning team that had the largest comeback. Tie breakers go to the team with more totalPoints. The comebacks are determined by adding up the total points scored by either teams through each day of the week, all while keeping track of the total point differential between them. The winner of the award is the team that, at any point in the week, was losing by the largest deficit. The award is named so due to Little Mac's potential to quickly swing a match in his favor, and because it rhymes and sounds cool.
 
@@ -31,6 +28,9 @@ Awarded to the team that scored the fewest totalPoints. Tie breakers go to the t
 
 *Super Sonic Award*
 Awarded to the team with the most stolenBases. It is a reference to Sonic's Final Smash, a transformation Sonic takes after acquiring all 7 Chaos Emeralds in various Sonic the Hedgehog games.
+
+^^/++*Target Smasher Award*
+Awarded to the team with the most strikeoutsPitchers (pitching strikeouts). The award is a reference to the mini-game Target Smasher!!, as well as a reference to pitchers hitting their targets.
 
 ^^/++*Temple Basement Survivor*
 Awarded to the team with the smallest ratio of earned runs allowed to baserunners allowed. It is calculated with the formula earnedRuns / (hits + walksPitchers + hitBatters). The award name is a reference to how Smash players can rack up massive damage in the basement on Hyrule Temple without being KO'd. So teams whose pitchers allow many baserunners, but only a few to score, earn this award.
