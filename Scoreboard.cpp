@@ -16,6 +16,12 @@ Scoreboard::Scoreboard()
     teamCount = 0;
     littleMacComebackAmount = 0;
     womboComboAmount = 0;
+    totalBasesLeadersSize = 0;
+    homeRunsLeadersSize = 0;
+    runsBattedInLeadersSize = 0;
+    earnedRunsLeadersSize = 0;
+    qualityStartsLeadersSize = 0;
+    strikeoutsLeadersSize = 0;
 }
 
 Scoreboard::~Scoreboard()
@@ -47,6 +53,99 @@ void Scoreboard::setTeams()
     }
 }
 
+void Scoreboard::setRunsBattedInLeaders()
+{
+    vector<Team*> leaders;
+    int target = 0, rbis;
+    for (int i = 0; i < teamCount; i++)
+    {
+        rbis = teams[i]->getRunsBattedIn();
+        if (rbis > target)
+        {
+            target = rbis;
+        }
+    }
+    for (int i = 0; i < teamCount; i++)
+    {
+        rbis = teams[i]->getRunsBattedIn();
+        if (rbis == target)
+        {
+            leaders.push_back(teams[i]);
+        }
+    }
+    for (int i = 0; i < leaders.size(); i++)
+    {
+        runsBattedInLeaders[i] = leaders[i]->getTeamId();
+        runsBattedInLeadersSize += 1;
+    }
+}
+
+void Scoreboard::setEarnedRunsLeaders()
+{
+    vector<Team*> leaders;
+    int target = 1000, er;
+    for (int i = 0; i < teamCount; i++)
+    {
+        if (teams[i]->qualifiesForPitchingAwards())
+        {
+            er = teams[i]->getEarnedRuns();
+            if (er < target)
+            {
+                target = er;
+            }
+        }
+    }
+    for (int i = 0; i < teamCount; i++)
+    {
+        if (teams[i]->qualifiesForPitchingAwards())
+        {
+            er = teams[i]->getEarnedRuns();
+            if (er == target)
+            {
+                leaders.push_back(teams[i]);
+            }
+        }
+    }
+    for (int i = 0; i < leaders.size(); i++)
+    {
+        earnedRunsLeaders[i] = leaders[i]->getTeamId();
+        earnedRunsLeadersSize += 1;
+    }
+}
+
+void Scoreboard::setQualityStartsLeaders()
+{
+    vector<Team*> leaders;
+    int target = 0, qs;
+    for (int i = 0; i < teamCount; i++)
+    {
+        if (teams[i]->qualifiesForPitchingAwards())
+        {
+            qs = teams[i]->getQualityStarts();
+            if (qs > target)
+            {
+                target = qs;
+            }
+        }
+    }
+    for (int i = 0; i < teamCount; i++)
+    {
+        if (teams[i]->qualifiesForPitchingAwards())
+        {
+            qs = teams[i]->getQualityStarts();
+            if (qs == target)
+            {
+                leaders.push_back(teams[i]);
+            }
+        }
+    }
+    for (int i = 0; i < leaders.size(); i++)
+    {
+        qualityStartsLeaders[i] = leaders[i]->getTeamId();
+        qualityStartsLeadersSize += 1;
+    }
+}
+
 int Scoreboard::getWeek()
 {
     return week;
@@ -60,6 +159,18 @@ vector<Matchup*> Scoreboard::getMatchups()
 vector<Team*> Scoreboard::getTeams()
 {
     return teams;
+}
+
+Team* Scoreboard::getTeamById(int i)
+{
+    for (int j = 0; j < teamCount; j++)
+    {
+        if (teams[j]->getTeamId() == i)
+        {
+            return teams[j];
+        }
+    }
+    return teams[0];
 }
 
 int Scoreboard::getMatchupCount()
@@ -107,6 +218,11 @@ vector<Team*> Scoreboard::getBowserPowerAwardWinners()
             winners.push_back(teams[i]);
         }
     }
+    for (int i = 0; i < winners.size(); i++)
+    {
+        totalBasesLeaders[i] = winners[i]->getTeamId();
+        totalBasesLeadersSize += 1;
+    }
     return winners;
 }
 
@@ -117,6 +233,7 @@ vector<Team*> Scoreboard::getFalconPawnchAwardWinners()
     for (int i = 0; i < teamCount; i++)
     {
         points = teams[i]->getTotalPoints();
+        cout << points << ", " << teams[i]->getOwnerName() << endl;
         if (points > target)
         {
             target = points;
@@ -191,6 +308,11 @@ vector<Team*> Scoreboard::getHomeRunBatAwardWinners()
             winners.push_back(teams[i]);
         }
     }
+    for (int i = 0; i < winners.size(); i++)
+    {
+        homeRunsLeaders[i] = winners[i]->getTeamId();
+        homeRunsLeadersSize += 1;
+    }
     return winners;
 }
 
@@ -200,7 +322,9 @@ vector<Team*> Scoreboard::getImReallyFeelingItAwardWinners()
     int target = 0, hbs;
     for (int i = 0; i < teamCount; i++)
     {
-        hbs = teams[i]->getHitBatters();
+        //cout << teams[i]->getOwnerName() << endl;
+        //cout << teams[i]->getHitByPitches() << endl;
+        hbs = teams[i]->getHitByPitches();
         if (hbs > target)
         {
             target = hbs;
@@ -208,7 +332,7 @@ vector<Team*> Scoreboard::getImReallyFeelingItAwardWinners()
     }
     for (int i = 0; i < teamCount; i++)
     {
-        hbs = teams[i]->getHitBatters();
+        hbs = teams[i]->getHitByPitches();
         if (hbs == target)
         {
             winners.push_back(teams[i]);
@@ -360,6 +484,8 @@ vector<Team*> Scoreboard::getTargetSmasherAwardWinners()
     {
         if (teams[i]->qualifiesForPitchingAwards())
         {
+            //cout << teams[i]->getOwnerName() << endl;
+            //cout << teams[i]->getStrikeoutsPitchers() << endl;
             qualifiers.push_back(teams[i]);
             ks = teams[i]->getStrikeoutsPitchers();
             if (ks > target)
@@ -370,11 +496,18 @@ vector<Team*> Scoreboard::getTargetSmasherAwardWinners()
     }
     for (int i = 0; i < qualifiers.size(); i++)
     {
+        //cout << teams[i]->getOwnerName() << endl;
         ks = qualifiers[i]->getStrikeoutsPitchers();
         if (ks == target)
         {
-            winners.push_back(teams[i]);
+            //cout << qualifiers[i]->getOwnerName() << endl;
+            winners.push_back(qualifiers[i]);
         }
+    }
+    for (int i = 0; i < winners.size(); i++)
+    {
+        strikeoutsLeaders[i] = winners[i]->getTeamId();
+        strikeoutsLeadersSize += 1;
     }
     return winners;
 }
@@ -403,6 +536,7 @@ vector<Team*> Scoreboard::getTempleBasementSurvivorAwardWinners()
         tr = qualifiers[i]->getTempleRatio();
         if (tr == target)
         {
+            cout << qualifiers[i]->getOwnerName() << ", " << qualifiers[i]->getTempleRatio() << endl;
             winners.push_back(qualifiers[i]);
         }
     }
@@ -498,6 +632,56 @@ vector<Team*> Scoreboard::getYoureTooSlowAwardWinners()
     return winners;
 }
 
+vector<Team*> Scoreboard::getDaybreakAwardWinners()
+{
+    vector<Team*> winners;
+    for (int i = 0; i < earnedRunsLeadersSize; i++)
+    {
+        int targetId = earnedRunsLeaders[i];
+        for (int j = 0; j < qualityStartsLeadersSize; j++)
+        {
+            if (qualityStartsLeaders[j] == targetId)
+            {
+                for (int k = 0; k < strikeoutsLeadersSize; k++)
+                {
+                    if (strikeoutsLeaders[k] == targetId)
+                    {
+                        winners.push_back(getTeamById(targetId));
+                    }
+                }
+            }
+        }
+    }
+    return winners;
+}
+
+vector<Team*> Scoreboard::getDragoonAwardWinners()
+{
+    vector<Team*> winners;
+    for (int i = 0; i < totalBasesLeadersSize; i++)
+    {
+        int targetId = totalBasesLeaders[i];
+        //cout << targetId << endl;
+        //cout << totalBasesLeaders[i] << ": " << getTeamById(totalBasesLeaders[i])->getOwnerName() << endl;
+        for (int j = 0; j < homeRunsLeadersSize; j++)
+        {
+            //cout << homeRunsLeaders[j] << ": " << getTeamById(homeRunsLeaders[j])->getOwnerName() << endl;
+            if (homeRunsLeaders[j] == targetId)
+            {
+                for (int k = 0; k < runsBattedInLeadersSize; k++)
+                {
+                    //cout << runsBattedInLeaders[k] << ": " << getTeamById(runsBattedInLeaders[k])->getOwnerName() << endl;
+                    if (runsBattedInLeaders[k] == targetId)
+                    {
+                        winners.push_back(getTeamById(targetId));
+                    }
+                }
+            }
+        }
+    }
+    return winners;
+}
+
 vector<Team*> Scoreboard::getTieBreaker(vector<Team*>& qualifiers)
 {
     vector<Team*> winners;
@@ -520,6 +704,39 @@ vector<Team*> Scoreboard::getTieBreaker(vector<Team*>& qualifiers)
         }
     }
     return winners;
+}
+
+void Scoreboard::displayLeaders()
+{
+    for (int i = 0; i < totalBasesLeadersSize; i++)
+    {
+        cout << getTeamById(totalBasesLeaders[i])->getOwnerName() << ", " << getTeamById(totalBasesLeaders[i])->getTotalBases() << endl;
+    }
+    for (int i = 0; i < homeRunsLeadersSize; i++)
+    {
+        cout << getTeamById(homeRunsLeaders[i])->getOwnerName() << ", " << getTeamById(homeRunsLeaders[i])->getHomeRuns() << endl;
+    }
+    for (int i = 0; i < runsBattedInLeadersSize; i++)
+    {
+        cout << getTeamById(runsBattedInLeaders[i])->getOwnerName() << ", " << getTeamById(runsBattedInLeaders[i])->getRunsBattedIn() << endl;
+    }
+    for (int i = 0; i < earnedRunsLeadersSize; i++)
+    {
+        cout << getTeamById(earnedRunsLeaders[i])->getOwnerName() << ", " << getTeamById(earnedRunsLeaders[i])->getEarnedRuns() << endl;
+    }
+    for (int i = 0; i < qualityStartsLeadersSize; i++)
+    {
+        cout << getTeamById(qualityStartsLeaders[i])->getOwnerName() << ", " << getTeamById(qualityStartsLeaders[i])->getQualityStarts() << endl;
+    }
+    for (int i = 0; i < strikeoutsLeadersSize; i++)
+    {
+        cout << getTeamById(strikeoutsLeaders[i])->getOwnerName() << ", " << getTeamById(strikeoutsLeaders[i])->getStrikeoutsPitchers() << endl;
+    }
+    cout << endl;
+    for (int i = 0; i < teamCount; i++)
+    {
+        cout << teams[i]->getOwnerName() << ", " << teams[i]->getQualityStarts() << endl;
+    }
 }
 
 

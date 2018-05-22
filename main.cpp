@@ -15,6 +15,8 @@ using namespace std;
 
 int  getWeek();
 void fillScoreboard(Scoreboard* s, int week);
+string* getTeamIds(int week);
+string* getDays(int week, int size);
 void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, string days[], int numOfDays);
 void setBatters(Roster* rosterPtr, string fileLoc);
 void setPitchers(Roster* rosterPtr, string fileLoc);
@@ -27,6 +29,7 @@ void bowserPower(Scoreboard* s);
 void falconPawnch(Scoreboard* s);
 void gimp(Scoreboard*s);
 void homeRunBat(Scoreboard* s);
+void imReallyFeelingIt(Scoreboard* s);
 void littleMacComeback(Scoreboard* s);
 void plankingLuigi(Scoreboard* s);
 void squeakyHammer(Scoreboard* s);
@@ -86,8 +89,25 @@ int getWeek()
 void fillScoreboard(Scoreboard* s, int week)
 {
     //string matchups[6] = { "Matchup4vs10", "Matchup5vs3", "Matchup6vs2", "Matchup8vs1", "Matchup11vs7", "Matchup12vs9" };
-    string teams[12] = { "4", "10", "5", "3", "6", "2", "8", "1", "11", "7", "12", "9" };
-    string days[8]   = { "Apr 2", "Apr 3", "Apr 4", "Apr 5", "Apr 6", "Apr 7", "Apr 8", "Apr 9" };
+    //string teams[12] = { "4", "10", "5", "3", "6", "2", "8", "1", "11", "7", "12", "9" };
+    //string days[8]   = { "Apr 2", "Apr 3", "Apr 4", "Apr 5", "Apr 6", "Apr 7", "Apr 8", "Apr 9" };
+    ifstream openFile("/Users/patrickayer/Desktop/fantasy/baseball/Week" + to_string(week) + "/days.txt");
+    int dayCount;
+    openFile >> dayCount;
+    string* teams = getTeamIds(week);
+    string* days = getDays(week, dayCount);
+    
+    for (int i = 0; i < 12; i++)
+    {
+        cout << teams[i] << endl;
+    }
+    for (int i = 0; i < dayCount; i++)
+    {
+        cout << days[i] << endl;
+    }
+    
+    //vector<string> teams = getTeamIdsOrMatchupDays(week, "/matchups.txt");
+    //vector<string> days = getTeamIdsOrMatchupDays(week, "/days.txt");
     //string away_id, home_id;
     //ifstream scoreboardFile("/Users/patrickayer/Desktop/fantasy/baseball/Week" +
                             //to_string(week) + "/matchups.txt");
@@ -109,13 +129,15 @@ void fillScoreboard(Scoreboard* s, int week)
                     matchup->getMatchupString(),
                     teams[i],
                     days,
-                    (sizeof(days) / sizeof(*days)));
+                    //(sizeof(days) / sizeof(*days)));
+                    dayCount);
         setTeamInfo(matchup->getHomeTeam(),
                     week,
                     matchup->getMatchupString(),
                     teams[i + 1],
                     days,
-                    (sizeof(days) / sizeof(*days)));
+                    //(sizeof(days) / sizeof(*days)));
+                    dayCount);
         
         //matchup->getAwayTeam()->printTeamInfo();
         //matchup->getHomeTeam()->printTeamInfo();
@@ -145,7 +167,49 @@ void fillScoreboard(Scoreboard* s, int week)
         //cout << "------\n";
         s->appendMatchup(matchup);
     }
+    delete [] teams;
+    delete [] days;
     s->setTeams();
+}
+
+string* getTeamIds(int week)
+{
+    string fileLoc = "/Users/patrickayer/Desktop/fantasy/baseball/Week" + to_string(week) + "/matchups.txt";
+    ifstream openFile(fileLoc);
+    string* teams = new string[12];
+    string data;
+    int counter = 0;
+    while (openFile >> data)
+    {
+        teams[counter] = data;
+        counter += 1;
+    }
+    openFile.close();
+    return teams;
+}
+
+string* getDays(int week, int size)
+{
+    string fileLoc = "/Users/patrickayer/Desktop/fantasy/baseball/Week" + to_string(week) + "/days.txt";
+    ifstream openFile(fileLoc);
+    string* days = new string[size];
+    string data;
+    int counter = 0;
+    openFile >> data;
+    /*
+    while (getline(openFile, data))
+    {
+        days[counter] = data;
+        counter += 1;
+        openFile.ignore();
+    }
+    */
+    while (openFile >> data)
+    {
+        days[counter] = data;
+        counter += 1;
+    }
+    return days;
 }
 
 //void setTeamInfo(Team* teamPtr, string fileLoc, string days[], int numOfDays)
@@ -170,7 +234,7 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
     teamFile >> intData;        teamPtr->setPitchersStarted(intData);
     teamFile >> intData;        teamPtr->setPitchingLimit(intData);
     teamFile >> intData;        teamPtr->setAcquisitions(intData);
-    teamFile >> intData;        teamPtr->setPitchingLimit(intData);
+    teamFile >> intData;        teamPtr->setAcquisitionsLimit(intData);
     
     teamFile.close();
     
@@ -208,6 +272,10 @@ void setTeamInfo(Team* teamPtr, int week, string matchupStr, string teamId, stri
     teamPtr->setTempleRatio();
     teamPtr->setTotalPoints();
     teamPtr->setLuigi();
+    if (teamPtr->isLuigi())
+    {
+        cout << teamPtr->getOwnerName() << endl;
+    }
     
 }
 
@@ -223,7 +291,7 @@ void setBatters(Roster* rosterPtr, string fileLoc)
         batterFile.ignore();
         getline(batterFile, strData);   batter->playerName = strData;
         batterFile >> strData;          batter->teamName = strData;
-        batterFile >> strData;          // temporarily for the batter's health
+        //batterFile >> strData;          // temporarily for the batter's health
         for (int i = 0; i < 15; i++)
         {
             batterFile >> strData;      batter->stats[i] = returnInteger(strData);
@@ -244,7 +312,7 @@ void setPitchers(Roster* rosterPtr, string fileLoc)
         pitcherFile.ignore();
         getline(pitcherFile, strData);  pitcher->playerName = strData;
         pitcherFile >> strData;         pitcher->teamName = strData;
-        pitcherFile >> strData;         // temporarily for the pitcher's health
+        //pitcherFile >> strData;         // temporarily for the pitcher's health
         for (int i = 0; i < 12; i++)
         {
             pitcherFile >> strData;
@@ -274,7 +342,7 @@ void setBench(Roster* rosterPtr, string fileLoc)
         benchFile.ignore();
         getline(benchFile, strData);    benchPlayer->playerName = strData;
         benchFile >> strData;           benchPlayer->teamName = strData;
-        benchFile >> strData;           // temporarily for the bench player's health
+        //benchFile >> strData;           // temporarily for the bench player's health
         rosterPtr->appendBenchPlayer(benchPlayer);
     }
 }
@@ -302,6 +370,7 @@ void displayAwards(Scoreboard* s)
     falconPawnch(s);
     gimp(s);
     homeRunBat(s);
+    imReallyFeelingIt(s);
     littleMacComeback(s);
     plankingLuigi(s);
     squeakyHammer(s);
@@ -432,6 +501,10 @@ void imReallyFeelingIt(Scoreboard* s)
         string award = "I'm Really Feeling It Award (" + to_string(winners[0]->getHitByPitches()) + " hit by pitches)\n";
         writeAwardToFile(winners[0], s->getWeek(), award);
         return;
+    }
+    if (winners.size() > 1)
+    {
+        cout << "I'm Really Feeling It Award, no winners, " << winners.size() << "-way tie.\n";
     }
 }
 
